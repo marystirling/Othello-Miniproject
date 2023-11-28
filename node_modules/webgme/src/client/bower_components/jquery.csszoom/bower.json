@@ -1,0 +1,23 @@
+{
+  "name": "jquery.csszoom",
+  "main": "jquery.csszoom.js",
+  "homepage": "https://github.com/rkereskenyi/jquery.csszoom",
+  "authors": [
+    "Robert Kereskenyi <https://github.com/rkereskenyi>",
+    "Patrik Meijer <patrik85@isis.vanderbilt.edu>"
+  ],
+  "description": "CSS zoom jquery plugin",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "jquery",
+    "zoom",
+    "css",
+    "plugin"
+  ],
+  "dependencies": {
+    "jquery": ">=1.7"
+  },
+  "license": "MIT"
+}

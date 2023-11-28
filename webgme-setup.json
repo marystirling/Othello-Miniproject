@@ -1,4 +1,25 @@
 {
-  "components": {},
-  "dependencies": {}
+  "components": {
+    "seeds": {
+      "OthelloSeed": {
+        "src": "src/seeds/OthelloSeed"
+      },
+      "Othello": {
+        "src": "src/seeds/Othello"
+      }
+    },
+    "visualizers": {
+      "ReactOthello": {
+        "src": "panels/ReactOthello/ReactOthelloPanel",
+        "title": "ReactOthello",
+        "panel": "src/visualizers/panels/ReactOthello",
+        "secondary": false,
+        "widget": "src/visualizers/widgets/ReactOthello"
+      }
+    }
+  },
+  "dependencies": {
+    "seeds": {},
+    "visualizers": {}
+  }
 }
