@@ -7,6 +7,8 @@ var config = require('webgme/config/config.default'),
     validateConfig = require('webgme/config/validator');
 
 // The paths can be loaded from the webgme-setup.json
+config.plugin.basePaths.push(__dirname + '/../src/plugins');
+config.seedProjects.basePaths.push(__dirname + '/../src/seeds/OthelloSeed');
 config.seedProjects.basePaths.push(__dirname + '/../src/seeds/Othello');
 
 
@@ -22,10 +24,10 @@ config.visualization.visualizerDescriptors.push(__dirname + '/../src/visualizers
 config.requirejsPaths = {
   'panels': './src/visualizers/panels',
   'widgets': './src/visualizers/widgets',
-  'Othello-Miniproject': './src/common'
+  'wdestup': './src/common'
 };
 
 
-config.mongo.uri = 'mongodb://127.0.0.1:27017/Othello-Miniproject';
+config.mongo.uri = 'mongodb://127.0.0.1:27017/wdestup';
 validateConfig(config);
 module.exports = config;

@@ -16,10 +16,25 @@
         "secondary": false,
         "widget": "src/visualizers/widgets/ReactOthello"
       }
+    },
+    "plugins": {
+      "CountingPieces": {
+        "src": "src/plugins/CountingPieces",
+        "test": "test/plugins/CountingPieces"
+      },
+      "ValidTiles": {
+        "src": "src/plugins/ValidTiles",
+        "test": "test/plugins/ValidTiles"
+      },
+      "Flipping": {
+        "src": "src/plugins/Flipping",
+        "test": "test/plugins/Flipping"
+      }
     }
   },
   "dependencies": {
     "seeds": {},
-    "visualizers": {}
+    "visualizers": {},
+    "plugins": {}
   }
 }
