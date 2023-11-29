@@ -1,9 +1,6 @@
 {
   "components": {
     "seeds": {
-      "OthelloSeed": {
-        "src": "src/seeds/OthelloSeed"
-      },
       "Othello": {
         "src": "src/seeds/Othello"
       }
@@ -29,6 +26,10 @@
       "Flipping": {
         "src": "src/plugins/Flipping",
         "test": "test/plugins/Flipping"
+      },
+      "Undo": {
+        "src": "src/plugins/Undo",
+        "test": "test/plugins/Undo"
       }
     }
   },
