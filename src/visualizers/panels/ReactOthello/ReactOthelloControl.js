@@ -7,7 +7,7 @@ define([
     'js/Constants',
     'js/Utils/GMEConcepts',
     'js/NodePropertyNames',
-    'Othello-Miniproject/constants'
+    'othello-miniproject/constants'
 ], function (
     CONSTANTS,
     GMEConcepts,

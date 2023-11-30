@@ -6,7 +6,7 @@
 define([
     'js/PanelBase/PanelBaseWithHeader',
     'js/PanelManager/IActivePanel',
-    'Othello-Miniproject/bundles/ReactOthelloWidget.bundle',
+    'othello-miniproject/bundles/ReactOthelloWidget.bundle',
     './ReactOthelloControl'
 ], function (
     PanelBaseWithHeader,

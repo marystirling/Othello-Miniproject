@@ -11,8 +11,8 @@ define([
     'plugin/PluginConfig',
     'text!./metadata.json',
     'plugin/PluginBase',
-    'Othello-Miniproject/utils',
-    'Othello-Miniproject/constants'
+    'othello-miniproject/utils',
+    'othello-miniproject/constants'
 ], function (
     PluginConfig,
     pluginMetadata,
