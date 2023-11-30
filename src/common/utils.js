@@ -12,8 +12,8 @@ define(['./constants'], function (CONSTANTS) {
                 let value = CONSTANTS.PIECE.EMPTY;
                 const pieces = core.getChildrenPaths(node);
                 if(pieces.length > 0) {
-                    value = core.isInstanceOf(nodeHash[pieces[0]], META.BlackPiece) ? 
-                        CONSTANTS.PIECE.BLACK : CONSTANTS.PIECE.WHITE;
+                    const pieceColor = core.getAttribute(nodeHash[pieces[0]], 'color');
+                    value = (pieceColor === 'black') ? CONSTANTS.PIECE.BLACK : CONSTANTS.PIECE.WHITE;
                 }
                 board[row][column] = value
                 //board[row * 8 + column] = value;
@@ -26,7 +26,7 @@ define(['./constants'], function (CONSTANTS) {
                 const node = nodeHash[tile];
                 const row = Number(core.getAttribute(node, 'row'));
                 const column = Number(core.getAttribute(node, 'column'));
-                //hash[row * 8 + column] = core.getPath(node);
+ 
                 hash[row][column] = core.getPath(node);
             });
             return hash;

@@ -51,3 +51,6 @@ class CountingPieces(PluginBase):
                 totalBlacks += 1
     logger.info('whites: {0}'.format(totalWhites))
     logger.info('blacks: {0}'.format(totalBlacks))
+
+    self.create_message(self.active_node, 'CountingPiecesResult', {'totalWhites': totalWhites, 'totalBlacks': totalBlacks})
+

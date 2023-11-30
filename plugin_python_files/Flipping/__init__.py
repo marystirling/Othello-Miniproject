@@ -363,6 +363,9 @@ class Flipping(PluginBase):
       # set currentMove pointer to point from our new_state to the new_piece placed
       core.set_pointer(new_state, 'currentMove', new_piece)
       
+      # set prev_state pointer to point from our new_state to the previous game state
+      core.set_pointer(new_state, 'prevState', gameState)
+      
       # set currentPlayer pointer to point from our new_state to the opposite color placed
       for playerNode in nodesList:
         if (core.is_instance_of(playerNode, META['Player'])):

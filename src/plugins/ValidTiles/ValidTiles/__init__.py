@@ -295,3 +295,4 @@ class ValidTiles(PluginBase):
             whichCol += 1
 
     logger.info(validTiles)
+    self.create_message(self.active_node, 'ValidTilesResult', validTiles)

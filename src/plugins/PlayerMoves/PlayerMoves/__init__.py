@@ -7,7 +7,7 @@ import logging
 from webgme_bindings import PluginBase
 
 # Setup a logger
-logger = logging.getLogger('Flipping')
+logger = logging.getLogger('PlayerMoves')
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler(sys.stdout)  # By default it logs to stderr..
 handler.setLevel(logging.INFO)

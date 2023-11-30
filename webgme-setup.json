@@ -30,6 +30,30 @@
       "Undo": {
         "src": "src/plugins/Undo",
         "test": "test/plugins/Undo"
+      },
+      "CheckWinCondition.js": {
+        "src": "src/plugins/CheckWinCondition.js",
+        "test": "test/plugins/CheckWinCondition.js"
+      },
+      "BuildDescriptor.js": {
+        "src": "src/plugins/BuildDescriptor.js",
+        "test": "test/plugins/BuildDescriptor.js"
+      },
+      "BuildDescriptor": {
+        "src": "src/plugins/BuildDescriptor",
+        "test": "test/plugins/BuildDescriptor"
+      },
+      "CheckWinCondition": {
+        "src": "src/plugins/CheckWinCondition",
+        "test": "test/plugins/CheckWinCondition"
+      },
+      "PlayerMoves": {
+        "src": "src/plugins/PlayerMoves",
+        "test": "test/plugins/PlayerMoves"
+      },
+      "CreateGame": {
+        "src": "src/plugins/CreateGame",
+        "test": "test/plugins/CreateGame"
       }
     }
   },
