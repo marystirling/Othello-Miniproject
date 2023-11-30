@@ -1,25 +1,35 @@
 import CONSTANTS from 'constants.js';
-import Tile from './tile';
+import Tile from './Tile'; // Assuming the Tile component is in the same directory
 
-export default function Board({player, board, win}) {
+export default function Board({ player, board, win }) {
+  const getTiles = () => {
+    const tiles = [];
+    board.forEach((value, row, col) => {
+      tiles.push(
+        <Tile
+          key={`tile_${row}_${col}`}
+          player={player}
+          piece={value}
+          row={row}
+          column={col}
+          win={win}
+        />
+      );
+    });
 
-    const getTiles = () => {
-        const tiles = [];
-        board.forEach((value, index) => {
-            tiles.push(<Tile key={'tile_' + index} player={player} piece={value} position={index} win={win}/>);
-        });
+    return tiles;
+  };
 
-        return tiles;
-    }
-
-    return (
-        <div style={{
-            display:'grid',
-            gridTemplateColumns: 'repeat(8, 1fr)',
-            gap: '0px',
-            width: '300px'
-        }}>
-            {getTiles()}
-        </div>
-    )
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(8, 1fr)',
+        gap: '0px',
+        width: '300px',
+      }}
+    >
+      {getTiles()}
+    </div>
+  );
 }

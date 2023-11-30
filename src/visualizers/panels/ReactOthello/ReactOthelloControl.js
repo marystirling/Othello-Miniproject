@@ -23,20 +23,17 @@ define([
 
         this._client = options.client;
 
-        // Initialize core collections and variables
-        //this._widget = options.widget;
-        this._updateWidget = null;
-        this._descriptor = null;
-
         this._currentNodeId = null;
         this._currentNodeParentId = undefined;
 
-        //this._initWidgetEventHandlers();
+        this._updateWidget = null;
+        this._descriptor = null;
 
         this._logger.debug('ctor finished');
 
         //TODO: this information should be gathered from the META
-        this._piece_black = '/n/J';
+        // both are Piece Meta (with color attribute)
+        this._piece_black = '/n/L';
         this._piece_white = '/n/L';
     }
 
@@ -57,8 +54,7 @@ define([
         };
     };
     */
-
-    /* * * * * * * * Visualizer content update callbacks * * * * * * * */
+/* * * * * * * * Visualizer content update callbacks * * * * * * * */
     // One major concept here is with managing the territory. The territory
     // defines the parts of the project that the visualizer is interested in
     // (this allows the browser to then only load those relevant parts).
@@ -90,65 +86,81 @@ define([
         }
     };
 
+    ReactOthelloControl.prototype._createDescriptor = function () {
+        const {_client, _META, _currentNodeId, _logger} = this;
+        if (typeof _currentNodeId === 'string') {
+            const context = _client.getCurrentPluginContext('BuildDescriptor');
+            context.managerConfig.activeNode = _currentNodeId;
+            context.managerConfig.namespace = null;
+            context.pluginConfig = {};
 
-    // This next function retrieves the relevant node information for the widget
-    ReactOthelloControl.prototype._getObjectDescriptor = function (nodeId) {
-        var node = this._client.getNode(nodeId),
-            objDescriptor;
-        if (node) {
-            objDescriptor = {
-                id: node.getId(),
-                name: node.getAttribute(nodePropertyNames.Attributes.name),
-                childrenIds: node.getChildrenIds(),
-                parentId: node.getParentId(),
-                isConnection: GMEConcepts.isConnection(nodeId)
-            };
+            _client.runBrowserPlugin('BuildDescriptor', context, (err, result)=>{
+                // console.log('export:', err, result);
+                if (err === null && result && result.success) {
+                    const descriptor = JSON.parse(result.messages[0].message);
+                    this._descriptor = descriptor;
+                    if(this._updateWidget) {
+                        this._updateWidget(descriptor);
+                    }
+                } else {
+                    //TODO - make a proper way of handling this
+                    _logger.error('Failed to collect descriptor', err);
+                }
+            });
         }
-
-        return objDescriptor;
     };
 
+    ReactOthelloControl.prototype.playerMoves = function (player, position) {
+        console.log(player, position);
+        const {_client, _currentNodeId, _logger} = this;
+        if (typeof _currentNodeId === 'string') {
+            const context = _client.getCurrentPluginContext('PlayerMoves');
+            context.managerConfig.activeNode = _currentNodeId;
+            context.managerConfig.namespace = null;
+            context.pluginConfig = {position};
+
+            _client.runBrowserPlugin('PlayerMoves', context, (err, result)=>{
+                // console.log('export:', err, result);
+                if (err === null && result && result.success) {
+                    //TODO: - there is nothing to do as the plugin updated the model
+                } else {
+                    //TODO - make a proper way of handling this
+                    _logger.error('Failed to make move', err);
+                }
+            });
+        }
+    }
     /* * * * * * * * Node Event Handling * * * * * * * */
     ReactOthelloControl.prototype._eventCallback = function (events) {
         var i = events ? events.length : 0,
             event;
 
         this._logger.debug('_eventCallback \'' + i + '\' items');
+        // if(this._updateWidget !== null) {
+            // console.log('we got widget connection');
+            // this._updateWidget([],[],{});
+        // }
 
-        while (i--) {
-            event = events[i];
-            switch (event.etype) {
-
-            case CONSTANTS.TERRITORY_EVENT_LOAD:
-                this._onLoad(event.eid);
-                break;
-            case CONSTANTS.TERRITORY_EVENT_UPDATE:
-                this._onUpdate(event.eid);
-                break;
-            case CONSTANTS.TERRITORY_EVENT_UNLOAD:
-                this._onUnload(event.eid);
-                break;
-            default:
-                break;
-            }
+        if (events[0] && events[0].etype === 'complete') {
+            //we have what we need
+            this._createDescriptor();
         }
-
         this._logger.debug('_eventCallback \'' + events.length + '\' items - DONE');
     };
 
-    ReactOthelloControl.prototype._onLoad = function (gmeId) {
-        var description = this._getObjectDescriptor(gmeId);
-        this._widget.addNode(description);
-    };
+    // ReactOthelloControl.prototype._onLoad = function (gmeId) {
+    //     var description = this._getObjectDescriptor(gmeId);
+    //     this._widget.addNode(description);
+    // };
 
-    ReactOthelloControl.prototype._onUpdate = function (gmeId) {
-        var description = this._getObjectDescriptor(gmeId);
-        this._widget.updateNode(description);
-    };
+    // ReactOthelloControl.prototype._onUpdate = function (gmeId) {
+    //     var description = this._getObjectDescriptor(gmeId);
+    //     this._widget.updateNode(description);
+    // };
 
-    ReactOthelloControl.prototype._onUnload = function (gmeId) {
-        this._widget.removeNode(gmeId);
-    };
+    // ReactOthelloControl.prototype._onUnload = function (gmeId) {
+    //     this._widget.removeNode(gmeId);
+    // };
 
     ReactOthelloControl.prototype._stateActiveObjectChanged = function (model, activeObjectId) {
         if (this._currentNodeId === activeObjectId) {
@@ -162,6 +174,7 @@ define([
     ReactOthelloControl.prototype.destroy = function () {
         this._detachClientEventListeners();
         this._removeToolbarItems();
+        this._updateWidget = null;
     };
 
     ReactOthelloControl.prototype._attachClientEventListeners = function () {
@@ -178,13 +191,17 @@ define([
         this._displayToolbarItems();
 
         if (typeof this._currentNodeId === 'string') {
-            WebGMEGlobal.State.registerActiveObject(this._currentNodeId, {suppressVisualizerFromNode: true});
+            //  trying to force a refresh in case of activation
+            const nodeId = this._currentNodeId;
+            this._currentNodeId = null;
+            WebGMEGlobal.State.registerActiveObject(nodeId, {suppressVisualizerFromNode: true});
         }
     };
 
     ReactOthelloControl.prototype.onDeactivate = function () {
         this._detachClientEventListeners();
         this._hideToolbarItems();
+        this._updateWidget = null;
     };
 
     /* * * * * * * * * * Updating the toolbar * * * * * * * * * */
@@ -218,6 +235,7 @@ define([
     };
 
     ReactOthelloControl.prototype._initializeToolbar = function () {
+        const {_client, _logger} = this;
         var self = this,
             toolBar = WebGMEGlobal.Toolbar;
 
@@ -226,26 +244,42 @@ define([
         this._toolbarItems.push(toolBar.addSeparator());
 
         /************** Go to hierarchical parent button ****************/
-        this.$btnModelHierarchyUp = toolBar.addButton({
-            title: 'Go to parent',
-            icon: 'glyphicon glyphicon-circle-arrow-up',
+        this.$btnNewGame = toolBar.addButton({
+            title: 'Start new game',
+            icon: 'glyphicon glyphicon-plus',
             clickFn: function (/*data*/) {
-                WebGMEGlobal.State.registerActiveObject(self._currentNodeParentId);
+                const context = _client.getCurrentPluginContext('CreateGame');
+                context.managerConfig.activeNode = self._currentNodeParentId;
+                context.managerConfig.namespace = null;
+                context.pluginConfig = {};
+
+                _client.runServerPlugin('CreateGame', context, (err, result)=>{
+                    // console.log('export:', err, result);
+                    if (err === null && result && result.success) {
+                        //TODO: - there is nothing to do as the plugin updated the model
+                        const newGamePath = result.messages[0].message;
+                        WebGMEGlobal.State.registerActiveObject(newGamePath);
+                        WebGMEGlobal.State.registerActiveVisualizer('ReactOthello');
+                    } else {
+                        //TODO - make a proper way of handling this
+                        _logger.error('Failed to initiate new game', err);
+                    }
+                });
             }
         });
-        this._toolbarItems.push(this.$btnModelHierarchyUp);
-        this.$btnModelHierarchyUp.hide();
+        this._toolbarItems.push(this.$btnNewGame);
+        this.$btnNewGame.hide();
 
         /************** Checkbox example *******************/
 
-        this.$cbShowConnection = toolBar.addCheckBox({
-            title: 'toggle checkbox',
-            icon: 'gme icon-gme_diagonal-arrow',
-            checkChangedFn: function (data, checked) {
-                self._logger.debug('Checkbox has been clicked!');
-            }
-        });
-        this._toolbarItems.push(this.$cbShowConnection);
+        // this.$cbShowConnection = toolBar.addCheckBox({
+        //     title: 'toggle checkbox',
+        //     icon: 'gme icon-gme_diagonal-arrow',
+        //     checkChangedFn: function (data, checked) {
+        //         self._logger.debug('Checkbox has been clicked!');
+        //     }
+        // });
+        // this._toolbarItems.push(this.$cbShowConnection);
 
         this._toolbarInitialized = true;
     };
