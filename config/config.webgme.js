@@ -23,10 +23,10 @@ config.visualization.visualizerDescriptors.push(__dirname + '/../src/visualizers
 config.requirejsPaths = {
   'panels': './src/visualizers/panels',
   'widgets': './src/visualizers/widgets',
-  'wdestup': './src/common'
+  'othello-miniproject': './src/common'
 };
 
 
-config.mongo.uri = 'mongodb://127.0.0.1:27017/wdestup';
+config.mongo.uri = 'mongodb://127.0.0.1:27017/othello-miniproject';
 validateConfig(config);
 module.exports = config;

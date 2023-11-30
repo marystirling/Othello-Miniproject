@@ -1,5 +1,5 @@
 import CONSTANTS from 'constants.js';
-import Tile from './Tile'; // Assuming the Tile component is in the same directory
+import Tile from './tile'; // Assuming the Tile component is in the same directory
 
 export default function Board({ player, board, win }) {
   const getTiles = () => {
