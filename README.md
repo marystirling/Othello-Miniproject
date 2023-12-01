@@ -1,5 +1,7 @@
 # Othello Miniproject
 
+## Dependencies
+- All you need installed is Docker Desktop.
 
 ## Deployment
 
