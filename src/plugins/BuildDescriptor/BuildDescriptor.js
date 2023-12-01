@@ -59,7 +59,11 @@ define([
     BuildDescriptor.prototype.main = function (callback) {
         const {core, logger, META, activeNode, result} = this;
 
-        const descriptor = {player:CONSTANTS.PLAYER.O,board:[],position2path:{}};
+        const descriptor = {
+            player: CONSTANTS.PLAYER.BLACK,
+            board: Array.from({ length: 8 }, () => Array(8).fill(CONSTANTS.PIECE.EMPTY)),
+            position2path: {}
+        };
         const nodeHash = {};
 
 

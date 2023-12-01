@@ -23,10 +23,7 @@
         "src": "src/plugins/ValidTiles",
         "test": "test/plugins/ValidTiles"
       },
-      "Flipping": {
-        "src": "src/plugins/Flipping",
-        "test": "test/plugins/Flipping"
-      },
+      
       "Undo": {
         "src": "src/plugins/Undo",
         "test": "test/plugins/Undo"
