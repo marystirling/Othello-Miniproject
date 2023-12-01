@@ -59,11 +59,6 @@ define([
     BuildDescriptor.prototype.main = function (callback) {
         const {core, logger, META, activeNode, result} = this;
 
-        const descriptor = {
-            player: CONSTANTS.PLAYER.BLACK,
-            board: Array.from({ length: 8 }, () => Array(8).fill(CONSTANTS.PIECE.EMPTY)),
-            position2path: {}
-        };
         const nodeHash = {};
 
 
@@ -72,26 +67,27 @@ define([
             nodes.forEach(node => {
                 nodeHash[core.getPath(node)] = node;
             });
-            
-            const currentPlayerPath = core.getPointerPath(activeNode,'currentPlayer');
-            if(core.getAttribute(nodeHash[currentPlayerPath], 'color') === 'black') {
-                descriptor.player = CONSTANTS.PLAYER.BLACK;
-            } else {
-                descriptor.player = CONSTANTS.PLAYER.WHITE;
-            }
 
-            core.getChildrenPaths(activeNode).forEach(playerOrBoard => {
-                const node = nodeHash[playerOrBoard];
-                if(core.isInstanceOf(node,META.Board)) {
-                    descriptor.boardPath = playerOrBoard;
+            // find gameState inside context of OthelloGame
+            core.getChildrenPaths(activeNode).forEach(potentialState => {
+                const node = nodeHash[potentialState];
+                if(core.isInstanceOf(node, META.OthelloGameState)) {
+                    gameStateNode = node;
+                    return true;
                 }
+                return false
             });
+
+            if (!gameStateNode) {
+                throw new Error("No Othello GameState found in the context of OthellOGame");
+            }
+                    
+            
             return this.invokePlugin('CheckWinCondition',{pluginConfig:{}});
         })
         .then(inner => {
+            const descriptor = UTILS.getGameStateDescriptor(core, META, gameStateNode, nodeHash);
             descriptor.win = JSON.parse(inner.messages[0].message);
-            descriptor.board = UTILS.getBoardDescriptor(core, META, nodeHash[descriptor.boardPath], nodeHash);
-            descriptor.position2path = UTILS.getPositionHash(core, nodeHash[descriptor.boardPath], nodeHash);
             this.createMessage(activeNode, JSON.stringify(descriptor));
             result.setSuccess(true);
             callback(null, result);
