@@ -32,7 +32,7 @@ define([
         this._logger.debug('ctor finished');
 
         //TODO: this information should be gathered from the META
-        // both are Piece Meta (with color attribute)
+        // both are Piece Meta (with color attribute)  
         this._piece_black = '/n/L';
         this._piece_white = '/n/L';
     }

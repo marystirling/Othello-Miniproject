@@ -67,13 +67,16 @@ define([
             nodes.forEach(node => {
                 nodeHash[core.getPath(node)] = node;
             });
-
+            
+            let gameStateNode;
             // find gameState inside context of OthelloGame
             core.getChildrenPaths(activeNode).forEach(potentialState => {
                 const node = nodeHash[potentialState];
                 if(core.isInstanceOf(node, META.OthelloGameState)) {
-                    gameStateNode = node;
-                    return true;
+                    if (core.getAttribute(node, 'state_name') === 'OthelloGameState1') {
+                        gameStateNode = node;
+                        return true;
+                    }
                 }
                 return false
             });
