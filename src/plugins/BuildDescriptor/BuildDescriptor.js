@@ -60,7 +60,7 @@ define([
         const {core, logger, META, activeNode, result} = this;
 
         const nodeHash = {};
-
+        logger.error('in build descirptor');
 
         core.loadSubTree(activeNode)
         .then(nodes=>{
@@ -71,6 +71,7 @@ define([
             let gameStateNode;
             // find gameState inside context of OthelloGame
             core.getChildrenPaths(activeNode).forEach(potentialState => {
+                logger.error('trying to find gamestate');
                 const node = nodeHash[potentialState];
                 if(core.isInstanceOf(node, META.OthelloGameState)) {
                     if (core.getAttribute(node, 'state_name') === 'OthelloGameState1') {

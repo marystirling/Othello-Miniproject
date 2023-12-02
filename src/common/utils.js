@@ -1,6 +1,7 @@
 define(['./constants'], function (CONSTANTS) {
     return {
         getBoardDescriptor: (core, META, boardNode, nodeHash) => {
+            console.log('getting board descriptor');
             // populates 2d array representing the board
             // const board = Array.from({ length: 8 }, () => Array(8).fill(CONSTANTS.PIECE.EMPTY));
             const board = []
@@ -22,6 +23,7 @@ define(['./constants'], function (CONSTANTS) {
                 //board[row][column] = value;
                 board[row * 8 + column] = value;
             });
+            console.log('returning board descriptor');
             return board;
         },
 
@@ -31,6 +33,7 @@ define(['./constants'], function (CONSTANTS) {
                 board: null,
                 position2path: null
             };
+            console.log('getting gameState descriptor');
 
             // in game state, get pointer path to current player, gets attribute, and then sets descriptor.player 
             const currentPlayerPath = core.getPointerPath(gameStateNode, 'currentPlayer');
@@ -48,6 +51,7 @@ define(['./constants'], function (CONSTANTS) {
                     descriptor.position2path = this.getPositionHash(core, boardNode, nodeHash);
                 };
             });
+            console.log('returning gamestate descriptor');
             return descriptor;
         },
         

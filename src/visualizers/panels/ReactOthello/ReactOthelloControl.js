@@ -60,7 +60,7 @@ define([
     // (this allows the browser to then only load those relevant parts).
     ReactOthelloControl.prototype.selectedObjectChanged = function (nodeId) {
         const {_logger, _client} = this;
-
+        console.log('in selectedObjectChanged');
         _logger.debug('activeObject nodeId \'' + nodeId + '\'');
 
         // Remove current territory patterns
@@ -75,7 +75,11 @@ define([
         if (typeof this._currentNodeId === 'string') {
             // Put new node's info into territory rules
             this._selfPatterns = {};
-            this._selfPatterns[this._currentNodeId] = {children: 3}; //all workflows in the project
+            // 5 since OthellOGame contains OthellOGameState
+                    // OthelloGameState contains Player and Board
+                    // Board contains Tile
+                    // Tile contains Piece
+            this._selfPatterns[this._currentNodeId] = {children: 4}; //all workflows in the project
 
             this._territoryId = _client.addUI(this, events => {
                 this._eventCallback(events);
@@ -87,6 +91,7 @@ define([
     };
 
     ReactOthelloControl.prototype._createDescriptor = function () {
+        console.log('in creating descirptor in reactothellocontrol');
         const {_client, _META, _currentNodeId, _logger} = this;
         if (typeof _currentNodeId === 'string') {
             const context = _client.getCurrentPluginContext('BuildDescriptor');
@@ -263,6 +268,32 @@ define([
                     } else {
                         //TODO - make a proper way of handling this
                         _logger.error('Failed to initiate new game', err);
+                    }
+                });
+            }
+        });
+        this._toolbarItems.push(this.$btnNewGame);
+        this.$btnNewGame.hide();
+
+        this.$btnNewGame = toolBar.addButton({
+            title: 'Undo',
+            icon: 'glyphicon glyphicon-circle-arrow-left',
+            clickFn: function (/*data*/) {
+                const context = _client.getCurrentPluginContext('Undo');
+                context.managerConfig.activeNode = self._currentNodeParentId;
+                context.managerConfig.namespace = null;
+                context.pluginConfig = {};
+
+                _client.runServerPlugin('Undo', context, (err, result)=>{
+                    // console.log('export:', err, result);
+                    if (err === null && result && result.success) {
+                        //TODO: - there is nothing to do as the plugin updated the model
+                        const prevGameState = result.messages[0].message;
+                        WebGMEGlobal.State.registerActiveObject(prevGameState);
+                        WebGMEGlobal.State.registerActiveVisualizer('ReactOthello');
+                    } else {
+                        //TODO - make a proper way of handling this
+                        _logger.error('Failed to initiate undo', err);
                     }
                 });
             }

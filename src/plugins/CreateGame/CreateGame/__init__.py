@@ -29,6 +29,7 @@ class CreateGame(PluginBase):
         index = 0
 
         logger.error('inside the code')
+        
         logger.error(active_node)
         for child in core.load_children(active_node):
             name = core.get_attribute(child,'name')
