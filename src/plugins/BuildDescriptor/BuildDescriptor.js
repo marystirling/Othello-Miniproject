@@ -61,6 +61,7 @@ define([
 
         const nodeHash = {};
         logger.error('in build descirptor');
+        console.log('in build descriptor;')
 
         core.loadSubTree(activeNode)
         .then(nodes=>{
@@ -76,10 +77,8 @@ define([
                 if(core.isInstanceOf(node, META.OthelloGameState)) {
                     if (core.getAttribute(node, 'state_name') === 'OthelloGameState1') {
                         gameStateNode = node;
-                        return true;
                     }
                 }
-                return false
             });
 
             if (!gameStateNode) {

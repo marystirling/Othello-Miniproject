@@ -2,6 +2,8 @@ import React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import Othello from './othello_widget';
 
+
+console.log('entering widget/src/index.jsx');
 const container = document.getElementById(VISUALIZER_INSTANCE_ID);
 const root = ReactDOMClient.createRoot(container);
 const onUpdateFromControl = (descriptor) => {

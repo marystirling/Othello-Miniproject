@@ -75,7 +75,7 @@ define([
         if (typeof this._currentNodeId === 'string') {
             // Put new node's info into territory rules
             this._selfPatterns = {};
-            // 5 since OthellOGame contains OthellOGameState
+            // 4 since OthellOGame contains OthellOGameState
                     // OthelloGameState contains Player and Board
                     // Board contains Tile
                     // Tile contains Piece
