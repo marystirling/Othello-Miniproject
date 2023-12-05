@@ -8,7 +8,7 @@ export default function Tile({player, piece, position, win}) {
     const [hasMouse, setMouse, onHasMouseChange] = useState(false);
 
     const onTileClick = () => {
-        if (piece === CONSTANTS.PIECE.EMPTY) {
+        if (piece === CONSTANTS.PIECE.EMPTY || piece === CONSTANTS.PIECE.VALID_MOVE) {
             WEBGME_CONTROL.playerMoves(player, position); // NEED TO SOMEHOW GET POSITON FROM DESCRIPTOR PATH2POSITION
         }
     }

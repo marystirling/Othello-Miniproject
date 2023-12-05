@@ -115,9 +115,11 @@ define([
 
     ReactOthelloControl.prototype.playerMoves = function (player, position) {
         console.log(player, position);
-        const {_client, _currentNodeId, _logger} = this;
+        const {_client, _currentNodeId, _logger, _descriptor} = this;
         if (typeof _currentNodeId === 'string') {
             const context = _client.getCurrentPluginContext('PlayerMoves');
+            _logger.error(_descriptor);
+            _logger.error(position);
             context.managerConfig.activeNode = _currentNodeId; // CHANGE ACTIVE NODE HERE
             context.managerConfig.namespace = null;
             context.pluginConfig = {position};
@@ -125,6 +127,7 @@ define([
             _client.runServerPlugin('PlayerMoves', context, (err, result)=>{
                 // console.log('export:', err, result);
                 if (err === null && result && result.success) {
+                    const descriptor = this._descriptor;
                     //TODO: - there is nothing to do as the plugin updated the model
                 } else {
                     //TODO - make a proper way of handling this
