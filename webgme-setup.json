@@ -23,7 +23,6 @@
         "src": "src/plugins/ValidTiles",
         "test": "test/plugins/ValidTiles"
       },
-      
       "Undo": {
         "src": "src/plugins/Undo",
         "test": "test/plugins/Undo"
@@ -51,6 +50,10 @@
       "CreateGame": {
         "src": "src/plugins/CreateGame",
         "test": "test/plugins/CreateGame"
+      },
+      "BuildDescriptorPy": {
+        "src": "src/plugins/BuildDescriptorPy",
+        "test": "test/plugins/BuildDescriptorPy"
       }
     }
   },

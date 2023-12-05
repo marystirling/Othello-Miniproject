@@ -26,8 +26,7 @@ config.requirejsPaths = {
   'othello-miniproject': './src/common'
 };
 
-console.log('finished configs in config.webgme.js');
 
-config.mongo.uri = 'mongodb://127.0.0.1:27017/othello-miniproject';
+config.mongo.uri = 'mongodb://127.0.0.1:27017/othello_miniproject';
 validateConfig(config);
 module.exports = config;
