@@ -31,14 +31,6 @@
         "src": "src/plugins/CheckWinCondition.js",
         "test": "test/plugins/CheckWinCondition.js"
       },
-      "BuildDescriptor.js": {
-        "src": "src/plugins/BuildDescriptor.js",
-        "test": "test/plugins/BuildDescriptor.js"
-      },
-      "BuildDescriptor": {
-        "src": "src/plugins/BuildDescriptor",
-        "test": "test/plugins/BuildDescriptor"
-      },
       "CheckWinCondition": {
         "src": "src/plugins/CheckWinCondition",
         "test": "test/plugins/CheckWinCondition"
