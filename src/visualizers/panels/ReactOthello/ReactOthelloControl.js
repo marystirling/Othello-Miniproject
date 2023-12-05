@@ -99,7 +99,7 @@ define([
             context.managerConfig.namespace = null;
             context.pluginConfig = {};
 
-            _client.runBrowserPlugin('BuildDescriptor', context, (err, result)=>{
+            _client.runServerPlugin('BuildDescriptor', context, (err, result)=>{
                 // console.log('export:', err, result);
                 if (err === null && result && result.success) {
                     const descriptor = JSON.parse(result.messages[0].message);
@@ -124,7 +124,7 @@ define([
             context.managerConfig.namespace = null;
             context.pluginConfig = {position};
 
-            _client.runBrowserPlugin('PlayerMoves', context, (err, result)=>{
+            _client.runServerPlugin('PlayerMoves', context, (err, result)=>{
                 // console.log('export:', err, result);
                 if (err === null && result && result.success) {
                     //TODO: - there is nothing to do as the plugin updated the model

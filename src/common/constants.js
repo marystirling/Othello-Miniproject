@@ -1,12 +1,12 @@
 define(['./constants'], function (CONSTANTS) {
     return {
         PLAYER: {
-            BLACK: 'b',
-            WHITE: 'w'
+            BLACK: 'black',
+            WHITE: 'white'
         },
         PIECE: {
-            BLACK: 'b',
-            WHITE: 'w',
+            BLACK: 'black',
+            WHITE: 'white',
             EMPTY: '-'
         }
     };
