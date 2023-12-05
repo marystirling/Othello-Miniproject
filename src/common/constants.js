@@ -7,7 +7,8 @@ define(['./constants'], function (CONSTANTS) {
         PIECE: {
             BLACK: 'black',
             WHITE: 'white',
-            EMPTY: '-'
+            EMPTY: '-',
+            VALID_MOVE: 'valid_move'
         }
     };
 });

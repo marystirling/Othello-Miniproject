@@ -118,7 +118,7 @@ define([
         const {_client, _currentNodeId, _logger} = this;
         if (typeof _currentNodeId === 'string') {
             const context = _client.getCurrentPluginContext('PlayerMoves');
-            context.managerConfig.activeNode = _currentNodeId;
+            context.managerConfig.activeNode = _currentNodeId; // CHANGE ACTIVE NODE HERE
             context.managerConfig.namespace = null;
             context.pluginConfig = {position};
 

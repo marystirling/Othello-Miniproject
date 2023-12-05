@@ -73,7 +73,7 @@ class BuildDescriptorPy(PluginBase):
     else:
       logger.info('no winner yet!')
     
-    descriptor = self.buildDescriptor(currentGameStateNode)
+    descriptor = self.buildDescriptor(currentGameStateNode, validTiles)
     descriptor['win'] = winner
     logger.info('descriptor: {0}'.format(descriptor))
     self.create_message(active_node, json.dumps(descriptor))
@@ -81,7 +81,7 @@ class BuildDescriptorPy(PluginBase):
   
   # function to get descriptor
   # {'player': colorString, 'board': [flattened array with piece color], 'position2path': nodePath}
-  def buildDescriptor(self, stateNode):
+  def buildDescriptor(self, stateNode, validTiles):
     active_node = self.active_node
     core = self.core
     logger = self.logger
@@ -94,14 +94,20 @@ class BuildDescriptorPy(PluginBase):
         boardNode = potentialBoard
     
     nodes = {}
-    
+    logger.info('in buildDescriptor valid tiles: {0}'.format(validTiles))
+    validTilesFlattened = []
+    for validTile in validTiles:
+      validRow = validTile[0]
+      validCol = validTile[1]
+      validTilesFlattened.append(validRow * 8 + validCol)
     # boardNode = active_node
+    logger.info('valid tiles flattened: {0}'.format(validTilesFlattened))
     
     # collect all nodes path
     for node in nodesList:
       nodes[core.get_path(node)] = node
       
-      
+    
     # retrieve pointer path to currentPlayer 
     currentPlayerPath = core.get_pointer_path(stateNode, 'currentPlayer')
     for node in nodesList:
@@ -112,9 +118,11 @@ class BuildDescriptorPy(PluginBase):
     
     # flattened array of 64 pieces
     # initialzie each element with an empty piece ('-') - no piece placed
-    board = []
-    for i in range(0, 64):
-      board.append('-')
+    board = ['-'] * 64
+
+    for i in validTilesFlattened:
+      board[i] = 'valid_move'
+      # TODO: do it here
     
     # collect piece color if a tile contains one, if not empty ('-')
     # also gives paths to each tile for player2Path in descriptor (hash_map)
@@ -127,12 +135,12 @@ class BuildDescriptorPy(PluginBase):
         row = core.get_attribute(tileNode, 'row')
         column = core.get_attribute(tileNode, 'column')
         pieceNodes = core.get_children_paths(tileNode)
-        pieceColor = '-'
+        
         if len(pieceNodes) > 0:
           pieceNode = nodes[pieceNodes[0]]
           pieceColor = core.get_attribute(pieceNode, 'color')
-        # add that pieceColor to flattened array 
-        board[row * 8 + column] = pieceColor
+          # add that pieceColor to flattened array 
+          board[row * 8 + column] = pieceColor
         hash_map[row * 8 + column] = tilePath
     
     
@@ -473,3 +481,4 @@ class BuildDescriptorPy(PluginBase):
     logger.info(validTiles)
     return validTiles
     #self.create_message(self.active_node, 'ValidTilesResult', validTiles)
+

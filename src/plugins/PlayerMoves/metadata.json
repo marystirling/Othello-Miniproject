@@ -11,26 +11,5 @@
   "disableBrowserSideExecution": true,
   "dependencies": [],
   "writeAccessRequired": true,
-  "configStructure": [
-    {
-      "name": "row",
-      "displayName": "row",
-      "description": "What row was the move made",
-      "value": 1,
-      "valueType": "number",
-      "minValue": 0,
-      "maxValue": 7,
-      "readOnly": false
-    },
-    {
-      "name": "column",
-      "displayName": "column",
-      "description": "What column was the move made",
-      "value": 1,
-      "valueType": "number",
-      "minValue": 0,
-      "maxValue": 7,
-      "readOnly": false
-    }
-  ]
+  "configStructure": []
 }

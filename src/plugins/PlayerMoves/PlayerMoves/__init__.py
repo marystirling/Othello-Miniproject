@@ -16,14 +16,14 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-class Flipping(PluginBase):
+class PlayerMoves(PluginBase):
   def main(self):
     active_node = self.active_node
     core = self.core
     logger = self.logger
     self.namespace = None
     META = self.META
-
+    logger.info('in PlayerMoves: {0}'.format(active_node))
     currentTile = core.load_sub_tree(active_node)[0]
     
     currRow = core.get_attribute(currentTile, 'row')

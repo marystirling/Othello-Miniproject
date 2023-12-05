@@ -27,7 +27,31 @@ class ValidTiles(PluginBase):
     nodesList = core.load_sub_tree(active_node)
     nodes = {}
     
-    boardNode = active_node
+    
+    
+    # collect all nodes path
+    for node in nodesList:
+      nodes[core.get_path(node)] = node
+
+    logger.info('in main of ValidTiles')
+    currentGameState = 'OthelloGameState1'
+    currentGameStateNode = ''
+    for p in paths:
+      stateNode = nodes[p]
+      if(core.is_instance_of(stateNode, META['OthelloGameState'])):
+        stateName = core.get_attribute(stateNode, 'state_name')
+        if stateName == 'OthelloGameState1':
+          currentGameState = stateName
+          currentGameStateNode = stateNode
+    
+    nodesList = core.load_sub_tree(currentGameStateNode)
+    for potentialBoard in nodesList:
+      if core.is_instance_of(potentialBoard, META['Board']):
+        boardNode = potentialBoard
+    
+    nodes = {}
+    
+    # boardNode = active_node
     
     # collect all nodes path
     for node in nodesList:
