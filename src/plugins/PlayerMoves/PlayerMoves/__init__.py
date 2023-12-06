@@ -329,6 +329,7 @@ class PlayerMoves(PluginBase):
       new_index = index + 1
       newStateName = gameStateName.rstrip(index_str) + str(new_index)
       
+      
       #new_state = core.create_node({'parent':META['GameFolder'], 'base':META['OthelloGameState']})
       
       # Copy the contents of the current node into the new node
@@ -338,6 +339,8 @@ class PlayerMoves(PluginBase):
       core.set_attribute(new_state, 'state_name', newStateName)
       
       
+        
+        
       # find tile with correct row and column in new_state 
       nodesList = core.load_sub_tree(new_state)
       

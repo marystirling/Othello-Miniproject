@@ -8,7 +8,7 @@ export default function Tile({player, piece, position, win}) {
     const [hasMouse, setMouse, onHasMouseChange] = useState(false);
 
     const onTileClick = () => {
-        if (piece === CONSTANTS.PIECE.EMPTY || piece === CONSTANTS.PIECE.VALID_MOVE) {
+        if (piece === CONSTANTS.PIECE.VALID_MOVE) {
             WEBGME_CONTROL.playerMoves(player, position); // NEED TO SOMEHOW GET POSITON FROM DESCRIPTOR PATH2POSITION
         }
     }
@@ -23,8 +23,8 @@ export default function Tile({player, piece, position, win}) {
 
     const getPiece = () => {
         console.log('GP:',player,piece,position,win);
-        const styleBlack = {fontSize:'90px', paddingLeft:'8px',paddingTop:'2px'};
-        const styleWhite = {fontSize:'90px', paddingLeft:'13px',paddingTop:'2px'};
+        const styleBlack = {fontSize:'70px', paddingLeft:'8px',paddingTop:'2px'};
+        const styleWhite = {fontSize:'70px', paddingLeft:'13px',paddingTop:'2px'};
         const dStyle = player === CONSTANTS.PLAYER.BLACK ? 
             JSON.parse(JSON.stringify(styleBlack)) : 
             JSON.parse(JSON.stringify(styleWhite));
@@ -61,8 +61,8 @@ export default function Tile({player, piece, position, win}) {
     const getTile = () => {
         console.log(piece);
         const style = {
-            width:'100px', 
-            height:'100px', 
+            width:'80px', 
+            height:'80px', 
             borderColor:'black',
             borderWidth:'2px',
             border:'solid'};

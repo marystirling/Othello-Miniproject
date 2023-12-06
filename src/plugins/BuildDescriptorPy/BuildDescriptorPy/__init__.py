@@ -27,6 +27,7 @@ class BuildDescriptorPy(PluginBase):
     
     
     nodesList = core.load_sub_tree(active_node)
+    
     nodes = {}
     
     # collect all nodes path
@@ -35,19 +36,33 @@ class BuildDescriptorPy(PluginBase):
       
     paths = core.get_children_paths(active_node)
     
+    # find the current game state
+    logger.info('in main')
+    currentGameState = ''
+    currentGameStateNode = ''
     
-    # TODO: need to adjust this to get most recent - or change META to get pointer
-    # find the most recent game state
+    # if only one game state children of OthelloGame, then OthelloGameState1
+    # find the most recent game state by looking at OthelloGameState index
+    # default is OthelloGameState1 (first state automatically)
     logger.info('in main')
     currentGameState = 'OthelloGameState1'
     currentGameStateNode = ''
+    maxIndex = 0
     for p in paths:
-      stateNode = nodes[p]
-      if(core.is_instance_of(stateNode, META['OthelloGameState'])):
-        stateName = core.get_attribute(stateNode, 'state_name')
-        if stateName == 'OthelloGameState1':
-          currentGameState = stateName
-          currentGameStateNode = stateNode
+        stateNode = nodes[p]
+        if core.is_instance_of(stateNode, META['OthelloGameState']):
+            stateName = core.get_attribute(stateNode, 'state_name')
+            index = ''.join([char for char in stateName if char.isdigit()])
+            if index and int(index) > maxIndex:
+                logger.info('go in here')
+                currentGameStateNode = stateNode
+                currentGameState = stateName
+                maxIndex = int(index)
+
+        
+          
+        
+    logger.info('current game state: {0}, {1}'.format(currentGameState, currentGameStateNode))
     
     # call validTiles function to get a list of validTiles left to play
     validTiles = self.validTiles(currentGameStateNode)
@@ -141,7 +156,7 @@ class BuildDescriptorPy(PluginBase):
           pieceColor = core.get_attribute(pieceNode, 'color')
           # add that pieceColor to flattened array 
           board[row * 8 + column] = pieceColor
-        hash_map[row * 8 + column] = tilePath
+        hash_map[row * 8 + column] = tileNode
     
     
     
@@ -481,4 +496,3 @@ class BuildDescriptorPy(PluginBase):
     logger.info(validTiles)
     return validTiles
     #self.create_message(self.active_node, 'ValidTilesResult', validTiles)
-

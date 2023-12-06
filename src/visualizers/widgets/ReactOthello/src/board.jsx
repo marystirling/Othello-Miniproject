@@ -26,7 +26,7 @@ export default function Board({ player, board, win }) {
         display: 'grid',
         gridTemplateColumns: 'repeat(8, 1fr)',
         gap: '0px',
-        width: '300px',
+        width: '250px',
       }}
     >
       {getTiles()}

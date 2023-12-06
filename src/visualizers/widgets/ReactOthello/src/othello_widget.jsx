@@ -6,19 +6,26 @@ export default function Othello({player, win, board}) {
     const getLabel = () => {
         if(!win) {
             let finished = true;
+            let totalWhites = 0;
+            let totalBlacks = 0;
             board.forEach(piece => {
                 if(piece === CONSTANTS.PIECE.EMPTY) {
                     finished = false;
+                }
+                else if (piece === CONSTANTS.PIECE.BLACK) {
+                    totalBlacks = totalBlacks + 1;
+                } else if (piece === CONSTANTS.PIECE.WHITE) {
+                    totalWhites = totalWhites + 1;
                 }
             });
             if(finished) {
                 return 'Game ended in tie.';
             }
             
-            if(player === CONSTANTS.PLAYER.BLACK) {
-                return 'Player black moves...';
+            if (player === CONSTANTS.PLAYER.BLACK) {
+                return `Player Black's Turn (Black: ${totalBlacks}, White: ${totalWhites})`;
             } else {
-                return 'Player white moves...';
+                return `Player White's Turn (Black: ${totalBlacks}, White: ${totalWhites})`;
             }
         } else {
             if(win.player === CONSTANTS.PLAYER.BLACK) {

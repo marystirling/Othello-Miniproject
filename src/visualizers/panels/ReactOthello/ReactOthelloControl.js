@@ -118,11 +118,14 @@ define([
         const {_client, _currentNodeId, _logger, _descriptor} = this;
         if (typeof _currentNodeId === 'string') {
             const context = _client.getCurrentPluginContext('PlayerMoves');
-            _logger.error(_descriptor);
-            _logger.error(position);
-            context.managerConfig.activeNode = _currentNodeId; // CHANGE ACTIVE NODE HERE
+            
+
+            // Use position to get the corresponding path from position2path
+            const tileNode = _descriptor.position2path[position];
+
+            context.managerConfig.activeNode = tileNode; // CHANGE ACTIVE NODE HERE
             context.managerConfig.namespace = null;
-            context.pluginConfig = {position};
+            context.pluginConfig = {};
 
             _client.runServerPlugin('PlayerMoves', context, (err, result)=>{
                 // console.log('export:', err, result);
