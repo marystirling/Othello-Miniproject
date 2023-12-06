@@ -113,17 +113,14 @@ define([
         }
     };
 
-    ReactOthelloControl.prototype.playerMoves = function (player, position) {
-        console.log(player, position);
+    ReactOthelloControl.prototype.playerMoves = function (player, clickedNodePath) {
+        
+        console.log('Player Moves - Player:', player, 'Clicked Node Path:', clickedNodePath);
         const {_client, _currentNodeId, _logger, _descriptor} = this;
         if (typeof _currentNodeId === 'string') {
             const context = _client.getCurrentPluginContext('PlayerMoves');
-            
 
-            // Use position to get the corresponding path from position2path
-            const tileNode = _descriptor.position2path[position];
-
-            context.managerConfig.activeNode = tileNode; // CHANGE ACTIVE NODE HERE
+            context.managerConfig.activeNode = clickedNodePath;
             context.managerConfig.namespace = null;
             context.pluginConfig = {};
 

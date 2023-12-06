@@ -156,7 +156,7 @@ class BuildDescriptorPy(PluginBase):
           pieceColor = core.get_attribute(pieceNode, 'color')
           # add that pieceColor to flattened array 
           board[row * 8 + column] = pieceColor
-        hash_map[row * 8 + column] = tileNode
+        hash_map[row * 8 + column] = tilePath
     
     
     

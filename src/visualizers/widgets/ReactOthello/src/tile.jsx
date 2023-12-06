@@ -3,13 +3,15 @@ import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { useState } from 'react';
 import CONSTANTS from 'constants.js';
 
-export default function Tile({player, piece, position, win}) {
+export default function Tile({player, piece, position, win, position2path}) {
 
     const [hasMouse, setMouse, onHasMouseChange] = useState(false);
 
     const onTileClick = () => {
         if (piece === CONSTANTS.PIECE.VALID_MOVE) {
-            WEBGME_CONTROL.playerMoves(player, position); // NEED TO SOMEHOW GET POSITON FROM DESCRIPTOR PATH2POSITION
+            const clickedNodePath = position2path[position];
+            console.log('Clicked Node Path:', clickedNodePath);
+            WEBGME_CONTROL.playerMoves(player, clickedNodePath);
         }
     }
 
@@ -22,7 +24,7 @@ export default function Tile({player, piece, position, win}) {
     }
 
     const getPiece = () => {
-        console.log('GP:',player,piece,position,win);
+        console.log('GP:',player,piece,position,win,position2path);
         const styleBlack = {fontSize:'70px', paddingLeft:'8px',paddingTop:'2px'};
         const styleWhite = {fontSize:'70px', paddingLeft:'13px',paddingTop:'2px'};
         const dStyle = player === CONSTANTS.PLAYER.BLACK ? 

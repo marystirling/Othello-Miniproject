@@ -1,7 +1,7 @@
 import CONSTANTS from 'constants.js';
 import Tile from './tile'; // Assuming the Tile component is in the same directory
 
-export default function Board({ player, board, win }) {
+export default function Board({ player, board, win, position2path }) {
   const getTiles = () => {
     const tiles = [];
     board.forEach((value, row, col) => {
@@ -13,6 +13,7 @@ export default function Board({ player, board, win }) {
           row={row}
           column={col}
           win={win}
+          position2path={position2path}
         />
       );
     });
