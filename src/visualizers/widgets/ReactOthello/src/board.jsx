@@ -4,14 +4,12 @@ import Tile from './tile'; // Assuming the Tile component is in the same directo
 export default function Board({ player, board, win, position2path }) {
   const getTiles = () => {
     const tiles = [];
-    board.forEach((value, row, col) => {
+    board.forEach((value, position) => {
       tiles.push(
         <Tile
-          key={`tile_${row}_${col}`}
+          key={`tile_${position}`}
           player={player}
           piece={value}
-          row={row}
-          column={col}
           win={win}
           position2path={position2path}
         />

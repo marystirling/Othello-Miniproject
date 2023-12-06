@@ -116,7 +116,7 @@ define([
     ReactOthelloControl.prototype.playerMoves = function (player, clickedNodePath) {
         
         console.log('Player Moves - Player:', player, 'Clicked Node Path:', clickedNodePath);
-        const {_client, _currentNodeId, _logger, _descriptor} = this;
+        const {_client, _currentNodeId, _logger} = this;
         if (typeof _currentNodeId === 'string') {
             const context = _client.getCurrentPluginContext('PlayerMoves');
 

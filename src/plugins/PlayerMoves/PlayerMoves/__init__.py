@@ -23,6 +23,9 @@ class PlayerMoves(PluginBase):
     logger = self.logger
     self.namespace = None
     META = self.META
+
+    logger.info('HERE IN PLAYER MOVES: {0}'.format(active_node))
+
     logger.info('in PlayerMoves: {0}'.format(active_node))
     currentTile = core.load_sub_tree(active_node)[0]
     
