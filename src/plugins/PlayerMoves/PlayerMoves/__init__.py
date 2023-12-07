@@ -26,15 +26,40 @@ class PlayerMoves(PluginBase):
 
     config = self.get_current_config()
     position = config['position']
-    logger.info('THIS IS PISIOTN: {0}'.format(position))
-
+    logger.info('position is {0}'.format(position))
     logger.info('HERE IN PLAYER MOVES: {0}'.format(active_node))
-
-    logger.info('in PlayerMoves: {0}'.format(active_node))
-    currentTile = core.load_sub_tree(active_node)[0]
     
-    currRow = core.get_attribute(currentTile, 'row')
-    currColumn = core.get_attribute(currentTile, 'column')
+    # get the row and column from curr
+    for pos_r in range(0, 8):
+      for pos_c in range(0, 8):
+        if (pos_r * 8 + pos_c) == position:
+          new_tile_r = pos_r
+          new_tile_c = pos_c
+    logger.info('position is ({0},{1})'.format(new_tile_r, new_tile_c))
+    nodesList = core.load_sub_tree(active_node)
+    
+    nodes = {}
+    
+    # collect all nodes path
+    for node in nodesList:
+      nodes[core.get_path(node)] = node
+    
+    for tileNode in nodesList: 
+      if core.is_instance_of(tileNode, META['Tile']):
+        tileRow = core.get_attribute(tileNode, 'row')
+        tileCol = core.get_attribute(tileNode, 'column')
+        if tileRow == new_tile_r and tileCol == new_tile_c:
+          logger.info('tilerow: ({0},{1})'.format(tileRow, tileCol))
+          currRow = tileRow
+          currColumn = tileCol
+          active_node = tileNode
+          currentTile = active_node
+          break
+    logger.info('active_node at tile node: {0}'.format(active_node))
+        
+      
+    paths = core.get_children_paths(active_node)
+
     logger.info('tile row: {0}'.format(currRow))
     logger.info('tile column: {0}'.format(currColumn))
     
