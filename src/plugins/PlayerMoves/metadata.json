@@ -11,5 +11,16 @@
   "disableBrowserSideExecution": true,
   "dependencies": [],
   "writeAccessRequired": true,
-  "configStructure": []
+  "configStructure": [
+    {
+      "name": "position",
+      "displayName": "position",
+      "description": "Where was the move made",
+      "value": 1,
+      "valueType": "number",
+      "minValue": 0,
+      "maxValue": 64,
+      "readOnly": false
+    }
+  ]
 }

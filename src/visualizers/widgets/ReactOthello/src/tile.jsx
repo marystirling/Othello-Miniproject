@@ -9,9 +9,7 @@ export default function Tile({player, piece, position, win, position2path}) {
 
     const onTileClick = () => {
         if (piece === CONSTANTS.PIECE.VALID_MOVE) {
-            const clickedNodePath = position2path[position];
-            console.log('Clicked Node Path:', clickedNodePath);
-            WEBGME_CONTROL.playerMoves(player, clickedNodePath);
+            WEBGME_CONTROL.playerMoves(player, position);
         }
     }
 
@@ -71,7 +69,7 @@ export default function Tile({player, piece, position, win, position2path}) {
             // #87CEEB
             if (win && win.positions.indexOf(position) !== -1) {
                 style.backgroundColor = '#EE2E31';
-            } else if (piece == CONSTANTS.PIECE.VALID_MOVE) {
+            } else if (piece === CONSTANTS.PIECE.VALID_MOVE) {
                 style.backgroundColor = '#87CEEB';
             }else if(hasMouse) {
                 if(piece === CONSTANTS.PIECE.EMPTY) {

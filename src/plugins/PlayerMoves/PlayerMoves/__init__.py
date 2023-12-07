@@ -24,6 +24,10 @@ class PlayerMoves(PluginBase):
     self.namespace = None
     META = self.META
 
+    config = self.get_current_config()
+    position = config['position']
+    logger.info('THIS IS PISIOTN: {0}'.format(position))
+
     logger.info('HERE IN PLAYER MOVES: {0}'.format(active_node))
 
     logger.info('in PlayerMoves: {0}'.format(active_node))

@@ -113,16 +113,15 @@ define([
         }
     };
 
-    ReactOthelloControl.prototype.playerMoves = function (player, clickedNodePath) {
+    ReactOthelloControl.prototype.playerMoves = function (player, position) {
         
-        console.log('Player Moves - Player:', player, 'Clicked Node Path:', clickedNodePath);
         const {_client, _currentNodeId, _logger} = this;
         if (typeof _currentNodeId === 'string') {
             const context = _client.getCurrentPluginContext('PlayerMoves');
 
-            context.managerConfig.activeNode = clickedNodePath;
+            context.managerConfig.activeNode = _currentNodeId;
             context.managerConfig.namespace = null;
-            context.pluginConfig = {};
+            context.pluginConfig = {position};
 
             _client.runServerPlugin('PlayerMoves', context, (err, result)=>{
                 // console.log('export:', err, result);
