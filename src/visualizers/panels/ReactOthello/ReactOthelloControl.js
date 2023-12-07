@@ -121,7 +121,7 @@ define([
 
             context.managerConfig.activeNode = _currentNodeId;
             context.managerConfig.namespace = null;
-            context.pluginConfig = {position};
+            context.pluginConfig = { position, flips };
 
             _client.runServerPlugin('PlayerMoves', context, (err, result)=>{
                 // console.log('export:', err, result);

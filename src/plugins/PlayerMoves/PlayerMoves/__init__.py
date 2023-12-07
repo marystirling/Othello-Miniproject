@@ -27,6 +27,11 @@ class PlayerMoves(PluginBase):
     config = self.get_current_config()
     position = config['position']
     logger.info('position is {0}'.format(position))
+
+    flips = config['flips']
+    logger.info('flips IS {0}'.format(flips))
+
+    tileClicked = flips[position]
     
     # get the row and column from curr
     for pos_r in range(0, 8):

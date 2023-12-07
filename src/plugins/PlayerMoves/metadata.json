@@ -21,6 +21,12 @@
       "minValue": 0,
       "maxValue": 64,
       "readOnly": false
+    }, 
+    {
+      "name": "flips",
+      "displayName": "flips",
+      "description": "Where was the move made",
+      "readOnly": false
     }
   ]
 }
