@@ -124,27 +124,26 @@ class PlayerMoves(PluginBase):
           opposite = 'black'
         
         
-        
-
+    stateChildren = core.load_sub_tree(gameStateNode)
+    logger.info('game state children: {0}'.format(stateChildren))
     logger.info('current player: {0}'.format(currentPlayer))
     logger.info('opposing player: {0}'.format(opposite))
 
-    # collect board information of tiles and possible pieces/connections
     board = []
     # dictionary of rows to organize board by rows
     rows = {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7:{}}
-    for boardNode in nodesList:
+    for boardNode in stateChildren:
         if (core.is_instance_of(boardNode, META['Board'])):
             allTiles = core.get_children_paths(boardNode)
             for tile in allTiles:
-                for currentTileNode in nodesList:
+                for currentTileNode in stateChildren:
                     if currentTileNode['nodePath'] == tile:
                         tileRow = core.get_attribute(currentTileNode, 'row')
                         tileColumn = core.get_attribute(currentTileNode, 'column')
                         tilePiece = core.get_children_paths(currentTileNode)
                         tilePieceColor = "none"
                         # gets color of tile if there is a piece on that tile; if not, stays 'none'
-                        for tilePieceNode in nodesList:
+                        for tilePieceNode in stateChildren:
                             if len(tilePiece) > 0:
                                 if tilePieceNode['nodePath'] == tilePiece[0]:
                                     tilePieceColor = core.get_attribute(tilePieceNode, 'color')
@@ -177,11 +176,9 @@ class PlayerMoves(PluginBase):
                 row.append({"color": rows[r][c]})
               # at each row to board list
               board.append(row)
-            break
 
 
-    # TODO: i think we need to loop through all our tile nodes here - maybe only getting 1
-    
+    logger.info('TILE FOR PLAYER MOVES: ({0}, {1})'.format(currRow, currColumn))
     # variable that holds the boolean value if piece can be placed at certain tile
     result = False
     
@@ -196,8 +193,11 @@ class PlayerMoves(PluginBase):
     while whichCol > 0 and not found_same_color:
       if whichCol != currColumn:
         if board[currRow][whichCol]['color'] == 'none':
+          logger.info('lh in break for ({0}, {1})'.format(currRow, whichCol))
           break
+      logger.info('lh ({0}, {1}) color: {2}'.format(currRow, whichCol, board[currRow][whichCol]['color']))
       if board[currRow][whichCol]['color'] == opposite:
+        logger.info('LH ENTERING OPPOSITE BOARD')
         found_opposite_color = True
         potential_flips.append((currRow, whichCol))
       elif board[currRow][whichCol]['color'] == currentPlayer:
@@ -206,6 +206,7 @@ class PlayerMoves(PluginBase):
           for flip in potential_flips:
             final_flips.append(flip)
             result = True
+      logger.info('in lh: {3}({0}, {1}): {2}'.format(currRow, whichCol, potential_flips, opposite))
       whichCol -= 1
     
     # checks rightward horizontal potential moves (same row index)
@@ -216,6 +217,7 @@ class PlayerMoves(PluginBase):
     while whichCol < 8 and not found_same_color:
       if whichCol != currColumn:
         if board[currRow][whichCol]['color'] == 'none':
+          logger.info('rh in break for ({0}, {1})'.format(currRow, whichCol))
           break
       if board[currRow][whichCol]['color'] == opposite:
         found_opposite_color = True
@@ -226,6 +228,7 @@ class PlayerMoves(PluginBase):
           for flip in potential_flips:
             final_flips.append(flip)
             result = True
+      logger.info('in rh: ({0}, {1}): {2}'.format(currRow, whichCol, potential_flips))
       whichCol += 1
     
     

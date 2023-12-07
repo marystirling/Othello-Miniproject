@@ -313,7 +313,7 @@ class BuildDescriptorPy(PluginBase):
         currRow = r
         currColumn = c
         if board[r][c]['color'] == 'none':
-        
+          
           # checks leftward horizontal potential moves (same row index)
           whichCol = currColumn
           potential_flips = []
@@ -334,7 +334,6 @@ class BuildDescriptorPy(PluginBase):
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
-                    result = True
             whichCol -= 1
 
 
@@ -358,7 +357,6 @@ class BuildDescriptorPy(PluginBase):
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
-                    result = True
             whichCol += 1
 
           # checking upward vertical potential moves (same column index)
@@ -381,7 +379,6 @@ class BuildDescriptorPy(PluginBase):
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
-                    result = True
             whichRow -= 1
 
           # checking downward vertical potential moves (same column index)
@@ -404,7 +401,6 @@ class BuildDescriptorPy(PluginBase):
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
-                    result = True
             whichRow += 1
 
           # check for right-up diagonal potential moves
@@ -425,7 +421,6 @@ class BuildDescriptorPy(PluginBase):
               if found_opposite_color:
                 for flip in potential_flips:
                   final_flips.append(flip)
-                  result = True
             whichRow += 1
             whichCol += 1
 
@@ -450,7 +445,6 @@ class BuildDescriptorPy(PluginBase):
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
-                    result = True
             whichRow += 1
             whichCol -= 1
 
@@ -475,7 +469,6 @@ class BuildDescriptorPy(PluginBase):
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
-                    result = True
 
             whichRow -= 1
             whichCol -= 1
@@ -501,7 +494,6 @@ class BuildDescriptorPy(PluginBase):
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
-                    result = True
             whichRow -= 1
             whichCol += 1
 
