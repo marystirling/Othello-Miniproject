@@ -37,14 +37,12 @@ class BuildDescriptorPy(PluginBase):
     paths = core.get_children_paths(active_node)
     
     # find the current game state
-    logger.info('in main')
     currentGameState = ''
     currentGameStateNode = ''
     
     # if only one game state children of OthelloGame, then OthelloGameState1
     # find the most recent game state by looking at OthelloGameState index
     # default is OthelloGameState1 (first state automatically)
-    logger.info('in main')
     currentGameState = 'OthelloGameState1'
     currentGameStateNode = ''
     maxIndex = 0
@@ -54,7 +52,6 @@ class BuildDescriptorPy(PluginBase):
             stateName = core.get_attribute(stateNode, 'state_name')
             index = ''.join([char for char in stateName if char.isdigit()])
             if index and int(index) > maxIndex:
-                logger.info('go in here')
                 currentGameStateNode = stateNode
                 currentGameState = stateName
                 maxIndex = int(index)
@@ -70,8 +67,8 @@ class BuildDescriptorPy(PluginBase):
   
     # call countingPieces function to get total whites and blacks
     totalWhites, totalBlacks = self.countingPieces(currentGameStateNode)
-    logger.info('totalWhites from main: {0}'.format(totalWhites))
-    logger.info('totalBlacks from main: {0}'.format(totalBlacks))
+    logger.info('totalWhites: {0}'.format(totalWhites))
+    logger.info('totalBlacks: {0}'.format(totalBlacks))
     
     # check to see if win Condition (no Valid Tiles)  
     if len(validTiles) == 0:
@@ -129,7 +126,6 @@ class BuildDescriptorPy(PluginBase):
 
     for i in validTilesFlattened:
       board[i] = 'valid_move'
-      # TODO: do it here
     
     # collect piece color if a tile contains one, if not empty ('-')
     allTilePaths = core.get_children_paths(boardNode)
@@ -148,8 +144,7 @@ class BuildDescriptorPy(PluginBase):
     
     
     descriptor = {'player': currentPlayer,
-                  'board': board,
-                }
+                  'board': board}
     
     return descriptor
   
@@ -167,8 +162,6 @@ class BuildDescriptorPy(PluginBase):
         boardNode = potentialBoard
     
     nodes = {}
-    
-    # boardNode = active_node
     
     # collect all nodes path
     for node in nodesList:
@@ -212,13 +205,11 @@ class BuildDescriptorPy(PluginBase):
     
     nodes = {}
     
-    # boardNode = active_node
-    
     # collect all nodes path
     for node in nodesList:
       nodes[core.get_path(node)] = node
     
-# collect board information of tiles and possible pieces/connections
+    # collect board information of tiles and possible pieces/connections
     board = []
     # dictionary of rows to organize board by rows
     rows = {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7:{}}
@@ -266,10 +257,6 @@ class BuildDescriptorPy(PluginBase):
                 row.append({"color": rows[r][c]})
               # at each row to board list
               board.append(row)
-    
-   
-    
-    
     
     # get player turn and opposite player
     gameState = core.get_parent(boardNode)

@@ -27,7 +27,6 @@ class PlayerMoves(PluginBase):
     config = self.get_current_config()
     position = config['position']
     logger.info('position is {0}'.format(position))
-    logger.info('HERE IN PLAYER MOVES: {0}'.format(active_node))
     
     # get the row and column from curr
     for pos_r in range(0, 8):
@@ -49,13 +48,11 @@ class PlayerMoves(PluginBase):
         tileRow = core.get_attribute(tileNode, 'row')
         tileCol = core.get_attribute(tileNode, 'column')
         if tileRow == new_tile_r and tileCol == new_tile_c:
-          logger.info('tilerow: ({0},{1})'.format(tileRow, tileCol))
           currRow = tileRow
           currColumn = tileCol
           active_node = tileNode
           currentTile = active_node
           break
-    logger.info('active_node at tile node: {0}'.format(active_node))
         
       
     paths = core.get_children_paths(active_node)
@@ -68,7 +65,6 @@ class PlayerMoves(PluginBase):
     
     # if tile contains a piece, returns "false" as the next piece cannot be placed here
     if len(tilePiece) != 0:
-      logger.info('false')
       logger.error('TILE IS NOT VALID PLACE FOR UPCOMING PIECE')
       return
     else:
@@ -80,9 +76,7 @@ class PlayerMoves(PluginBase):
     
     # GameState contains Board
     gameState = core.get_parent(board)
-    logger.info('game state::::: {0}'.format(gameState))
     othelloGame = core.get_parent(gameState)
-    logger.info('othello game::: {0}'.format(gameState))
 
     # get OthelloGameState with highest index
     currentGameState = 'OthelloGameState1'
@@ -96,7 +90,6 @@ class PlayerMoves(PluginBase):
         stateName = core.get_attribute(potentialGameState, 'state_name')
         index = ''.join([char for char in stateName if char.isdigit()])
         if index and int(index) > maxIndex:
-            logger.info('go in here')
             gameStateNode = potentialGameState
             gameState = potentialGameState
             gameStateName = stateName
@@ -125,7 +118,6 @@ class PlayerMoves(PluginBase):
         
         
     stateChildren = core.load_sub_tree(gameStateNode)
-    logger.info('game state children: {0}'.format(stateChildren))
     logger.info('current player: {0}'.format(currentPlayer))
     logger.info('opposing player: {0}'.format(opposite))
 
@@ -193,11 +185,8 @@ class PlayerMoves(PluginBase):
     while whichCol > 0 and not found_same_color:
       if whichCol != currColumn:
         if board[currRow][whichCol]['color'] == 'none':
-          logger.info('lh in break for ({0}, {1})'.format(currRow, whichCol))
           break
-      logger.info('lh ({0}, {1}) color: {2}'.format(currRow, whichCol, board[currRow][whichCol]['color']))
       if board[currRow][whichCol]['color'] == opposite:
-        logger.info('LH ENTERING OPPOSITE BOARD')
         found_opposite_color = True
         potential_flips.append((currRow, whichCol))
       elif board[currRow][whichCol]['color'] == currentPlayer:
@@ -206,7 +195,6 @@ class PlayerMoves(PluginBase):
           for flip in potential_flips:
             final_flips.append(flip)
             result = True
-      logger.info('in lh: {3}({0}, {1}): {2}'.format(currRow, whichCol, potential_flips, opposite))
       whichCol -= 1
     
     # checks rightward horizontal potential moves (same row index)
@@ -217,7 +205,6 @@ class PlayerMoves(PluginBase):
     while whichCol < 8 and not found_same_color:
       if whichCol != currColumn:
         if board[currRow][whichCol]['color'] == 'none':
-          logger.info('rh in break for ({0}, {1})'.format(currRow, whichCol))
           break
       if board[currRow][whichCol]['color'] == opposite:
         found_opposite_color = True
@@ -228,7 +215,6 @@ class PlayerMoves(PluginBase):
           for flip in potential_flips:
             final_flips.append(flip)
             result = True
-      logger.info('in rh: ({0}, {1}): {2}'.format(currRow, whichCol, potential_flips))
       whichCol += 1
     
     
@@ -386,9 +372,6 @@ class PlayerMoves(PluginBase):
     # Set the name of the new node separately
     core.set_attribute(new_state, 'state_name', newStateName)
     
-    
-      
-      
     # find tile with correct row and column in new_state 
     nodesList = core.load_sub_tree(new_state)
     
