@@ -30,8 +30,8 @@ class PlayerMoves(PluginBase):
 
     flips = config['flips']
     logger.info('flips IS {0}'.format(flips))
-
-    tileClicked = flips[position]
+    logger.info('typename of pos:{0}'.format(type(position)))
+    final_flips = flips[str(position)]
     
     # get the row and column from curr
     for pos_r in range(0, 8):
@@ -126,239 +126,13 @@ class PlayerMoves(PluginBase):
     logger.info('current player: {0}'.format(currentPlayer))
     logger.info('opposing player: {0}'.format(opposite))
 
-    board = []
-    # dictionary of rows to organize board by rows
-    rows = {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7:{}}
-    for boardNode in stateChildren:
-        if (core.is_instance_of(boardNode, META['Board'])):
-            allTiles = core.get_children_paths(boardNode)
-            for tile in allTiles:
-                for currentTileNode in stateChildren:
-                    if currentTileNode['nodePath'] == tile:
-                        tileRow = core.get_attribute(currentTileNode, 'row')
-                        tileColumn = core.get_attribute(currentTileNode, 'column')
-                        tilePiece = core.get_children_paths(currentTileNode)
-                        tilePieceColor = "none"
-                        # gets color of tile if there is a piece on that tile; if not, stays 'none'
-                        for tilePieceNode in stateChildren:
-                            if len(tilePiece) > 0:
-                                if tilePieceNode['nodePath'] == tilePiece[0]:
-                                    tilePieceColor = core.get_attribute(tilePieceNode, 'color')
-                                    break
-                    
-                        # organize tile colors by their row number 
-                        if tileRow == 0:
-                            rows[0][tileColumn] = tilePieceColor
-                        elif tileRow == 1:
-                            rows[1][tileColumn] = tilePieceColor
-                        elif tileRow == 2:
-                            rows[2][tileColumn] = tilePieceColor
-                        elif tileRow == 3:
-                            rows[3][tileColumn] = tilePieceColor
-                        elif tileRow == 4:
-                            rows[4][tileColumn] = tilePieceColor
-                        elif tileRow == 5:
-                            rows[5][tileColumn] = tilePieceColor
-                        elif tileRow == 6:
-                            rows[6][tileColumn] = tilePieceColor
-                        elif tileRow == 7:
-                            rows[7][tileColumn] = tilePieceColor        
-                        
-                        break
-            
-           
-            for r in range(0, 8):
-              row = []
-              for c in range(0, 8):
-                row.append({"color": rows[r][c]})
-              # at each row to board list
-              board.append(row)
-
-
-    logger.info('TILE FOR PLAYER MOVES: ({0}, {1})'.format(currRow, currColumn))
-    # variable that holds the boolean value if piece can be placed at certain tile
-    result = False
-    
-    # list of coordinates of opposite color pieces that can be flipped if this tile chosen
-    final_flips = []
-    
-    # checks leftward horizontal potential moves (same row index)
-    whichCol = currColumn
-    potential_flips = []
-    found_same_color = False
-    found_opposite_color = False
-    while whichCol > 0 and not found_same_color:
-      if whichCol != currColumn:
-        if board[currRow][whichCol]['color'] == 'none':
-          break
-      if board[currRow][whichCol]['color'] == opposite:
-        found_opposite_color = True
-        potential_flips.append((currRow, whichCol))
-      elif board[currRow][whichCol]['color'] == currentPlayer:
-        found_same_color = True
-        if found_opposite_color:
-          for flip in potential_flips:
-            final_flips.append(flip)
-            result = True
-      whichCol -= 1
-    
-    # checks rightward horizontal potential moves (same row index)
-    whichCol = currColumn
-    potential_flips = []
-    found_same_color = False
-    found_opposite_color = False
-    while whichCol < 8 and not found_same_color:
-      if whichCol != currColumn:
-        if board[currRow][whichCol]['color'] == 'none':
-          break
-      if board[currRow][whichCol]['color'] == opposite:
-        found_opposite_color = True
-        potential_flips.append((currRow, whichCol))
-      elif board[currRow][whichCol]['color'] == currentPlayer:
-        found_same_color = True
-        if found_opposite_color:
-          for flip in potential_flips:
-            final_flips.append(flip)
-            result = True
-      whichCol += 1
-    
-    
-    # checking upward vertical potential moves (same column index)
-    whichRow = currRow
-    potential_flips = []
-    found_same_color = False
-    found_opposite_color = False
-    while whichRow > 0 and not found_same_color:
-      if whichRow != currRow:
-        if board[whichRow][currColumn]['color'] == 'none':
-          break
-      if board[whichRow][currColumn]['color'] == opposite:
-        found_opposite_color = True
-        potential_flips.append((whichRow, currColumn))
-      elif board[whichRow][currColumn]['color'] == currentPlayer:
-        found_same_color = True
-        if found_opposite_color:
-          for flip in potential_flips:
-            final_flips.append(flip)
-            result = True
-      whichRow -= 1
-    
-    # checking downward vertical potential moves (same column index)
-    whichRow = currRow
-    potential_flips = []
-    found_same_color = False
-    found_opposite_color = False
-    while whichRow < 8 and not found_same_color:
-      if whichRow != currRow:
-        if board[whichRow][currColumn]['color'] == 'none':
-          break
-      if board[whichRow][currColumn]['color'] == opposite:
-        found_opposite_color = True
-        potential_flips.append((whichRow, currColumn))
-      elif board[whichRow][currColumn]['color'] == currentPlayer:
-        found_same_color = True
-        if found_opposite_color:
-          for flip in potential_flips:
-            final_flips.append(flip)
-            result = True
-      whichRow += 1
-              
-    # check for right-up diagonal potential moves
-    whichRow = currRow
-    whichCol = currColumn
-    potential_flips = []
-    found_same_color = False
-    found_opposite_color = False
-    while whichRow < 8 and whichCol < 8 and not found_same_color:
-      if whichRow != currRow:
-        if board[whichRow][whichCol]['color'] == 'none':
-          break
-      if board[whichRow][whichCol]['color'] == opposite:
-        found_opposite_color = True
-        potential_flips.append((whichRow, whichCol))
-      elif board[whichRow][whichCol]['color'] == currentPlayer:
-        found_same_color = True
-        if found_opposite_color:
-          for flip in potential_flips:
-            final_flips.append(flip)
-            result = True
-      whichRow += 1
-      whichCol += 1
-    
-    # check for right-down diagonal potential moves
-    whichRow = currRow
-    whichCol = currColumn
-    potential_flips = []
-    found_same_color = False
-    found_opposite_color = False
-    while whichRow < 8 and whichCol > 0 and not found_same_color:
-      if whichRow != currRow:
-        if board[whichRow][whichCol]['color'] == 'none':
-          break
-      if board[whichRow][whichCol]['color'] == opposite:
-        found_opposite_color = True
-        potential_flips.append((whichRow, whichCol))
-      elif board[whichRow][whichCol]['color'] == currentPlayer:
-        found_same_color = True
-        if found_opposite_color:
-          for flip in potential_flips:
-            final_flips.append(flip)
-            result = True
-      whichRow += 1
-      whichCol -= 1
-    
-    # checks for left-down diagonal potential moves
-    whichRow = currRow
-    whichCol = currColumn
-    potential_flips = []
-    found_same_color = False
-    found_opposite_color = False
-    while whichRow > 0 and whichCol > 0 and not found_same_color:
-      if whichRow != currRow:
-        if board[whichRow][whichCol]['color'] == 'none':
-          break
-      if board[whichRow][whichCol]['color'] == opposite:
-        found_opposite_color = True
-        potential_flips.append((whichRow, whichCol))
-      elif board[whichRow][whichCol]['color'] == currentPlayer:
-        found_same_color = True
-        if found_opposite_color:
-          for flip in potential_flips:
-            final_flips.append(flip)
-            result = True
-      
-      whichRow -= 1
-      whichCol -= 1
-
-    # checks for left-up diagonal potential moves
-    whichRow = currRow
-    whichCol = currColumn
-    potential_flips = []
-    found_same_color = False
-    found_opposite_color = False
-    while whichRow > 0 and whichCol < 8 and not found_same_color:
-      if whichRow != currRow:
-        if board[whichRow][whichCol]['color'] == 'none':
-          break
-      if board[whichRow][whichCol]['color'] == opposite:
-        found_opposite_color = True
-        potential_flips.append((whichRow, whichCol))
-      elif board[whichRow][whichCol]['color'] == currentPlayer:
-        found_same_color = True
-        if found_opposite_color:
-          for flip in potential_flips:
-            final_flips.append(flip)
-            result = True
-      whichRow -= 1
-      whichCol += 1
+   
     
     
     # print out result value if next piece can be placed at this tile
     if len(final_flips) > 0:
       logger.info('flips {0} at these (row, column) pairs: {1}'.format(opposite, final_flips))
-    logger.info(result)
-    
-    # if result: 
+   
 
     logger.info('IN PLAYER MOVES VALID TILES: {0}'.format(final_flips))
     gameStateName = str(gameStateName)
@@ -415,5 +189,3 @@ class PlayerMoves(PluginBase):
     
     self.util.save(self.root_node, self.commit_hash, self.branch_name, 'new game state')
     
-  #else:
-  #  logger.error('TILE IS NOT VALID PLACE FOR UPCOMING PIECE')
