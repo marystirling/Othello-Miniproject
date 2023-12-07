@@ -62,13 +62,11 @@ class BuildDescriptorPy(PluginBase):
     logger.info('current game state: {0}, {1}'.format(currentGameState, currentGameStateNode))
     
     # call validTiles function to get a list of validTiles left to play
-    validTiles, connections = self.validTiles(currentGameStateNode)
-    logger.info(self.validTiles(currentGameStateNode))
-    logger.info('CONNECTIONS IN BUILD DESCRIPTOR: {0}'.format(connections))
+    validTiles, connections, currentPlayer, opposite = self.validTiles(currentGameStateNode)
+  
     # call countingPieces function to get total whites and blacks
     totalWhites, totalBlacks = self.countingPieces(currentGameStateNode)
-    logger.info('totalWhites: {0}'.format(totalWhites))
-    logger.info('totalBlacks: {0}'.format(totalBlacks))
+
     
     # check to see if win Condition (no Valid Tiles)  
     if len(validTiles) == 0:
@@ -79,6 +77,7 @@ class BuildDescriptorPy(PluginBase):
     
     descriptor = self.buildDescriptor(currentGameStateNode, validTiles)
     descriptor['win'] = winner
+    descriptor['player'] = currentPlayer
     descriptor['flips'] = connections
     logger.info('descriptor: {0}'.format(descriptor))
     self.create_message(active_node, json.dumps(descriptor))
@@ -105,22 +104,12 @@ class BuildDescriptorPy(PluginBase):
       validRow = validTile[0]
       validCol = validTile[1]
       validTilesFlattened.append(validRow * 8 + validCol)
-    # boardNode = active_node
-    logger.info('valid tiles flattened: {0}'.format(validTilesFlattened))
+
     
     # collect all nodes path
     for node in nodesList:
       nodes[core.get_path(node)] = node
       
-    
-    # retrieve pointer path to currentPlayer 
-    currentPlayerPath = core.get_pointer_path(stateNode, 'currentPlayer')
-    for node in nodesList:
-      if node['nodePath'] == currentPlayerPath:
-        currentPlayerNode = node
-        currentPlayer = core.get_attribute(currentPlayerNode, 'color')
-    logger.info('currentPlayer: {0}'.format(currentPlayer))
-    
     # flattened array of 64 pieces
     # initialzie each element with an empty piece ('-') - no piece placed
     board = ['-'] * 64
@@ -144,8 +133,7 @@ class BuildDescriptorPy(PluginBase):
           board[row * 8 + column] = pieceColor
     
     
-    descriptor = {'player': currentPlayer,
-                  'board': board}
+    descriptor = {'board': board}
     
     return descriptor
   
@@ -184,8 +172,7 @@ class BuildDescriptorPy(PluginBase):
                 totalWhites += 1
               elif tilePieceColor == 'black':
                 totalBlacks += 1
-    logger.info('whites: {0}'.format(totalWhites))
-    logger.info('blacks: {0}'.format(totalBlacks))
+    
 
     #self.create_message(self.active_node, 'CountingPiecesResult', {'totalWhites': totalWhites, 'totalBlacks': totalBlacks})
     return totalWhites, totalBlacks
@@ -441,7 +428,6 @@ class BuildDescriptorPy(PluginBase):
                       connections[currRow * 8 + currColumn].append((flip[0], flip[1]))
                     else: 
                       connections[currRow * 8 + currColumn] = [(flip[0], flip[1])]
-                    logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
             whichRow += 1
@@ -469,7 +455,6 @@ class BuildDescriptorPy(PluginBase):
                       connections[currRow * 8 + currColumn].append((flip[0], flip[1]))
                     else: 
                       connections[currRow * 8 + currColumn] = [(flip[0], flip[1])]
-                    logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
 
@@ -498,12 +483,11 @@ class BuildDescriptorPy(PluginBase):
                       connections[currRow * 8 + currColumn].append((flip[0], flip[1]))
                     else: 
                       connections[currRow * 8 + currColumn] = [(flip[0], flip[1])]
-                    logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
             whichRow -= 1
             whichCol += 1
 
     logger.info('IN BUILD DESCRIPTOR VALID TILES: {0}'.format(validTiles))
-    return validTiles, connections
-    #self.create_message(self.active_node, 'ValidTilesResult', validTiles)
+    return validTiles, connections, currentPlayer, opposite
+

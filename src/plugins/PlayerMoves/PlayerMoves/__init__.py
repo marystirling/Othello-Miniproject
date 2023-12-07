@@ -24,22 +24,24 @@ class PlayerMoves(PluginBase):
     self.namespace = None
     META = self.META
 
+    # get the position of the tileClicked
     config = self.get_current_config()
     position = config['position']
-    logger.info('position is {0}'.format(position))
+    
 
+    # get the tiles to be flipped by tileClicked
     flips = config['flips']
-    logger.info('flips IS {0}'.format(flips))
-    logger.info('typename of pos:{0}'.format(type(position)))
     final_flips = flips[str(position)]
     
-    # get the row and column from curr
+    # get the row and column from tileClicked
     for pos_r in range(0, 8):
       for pos_c in range(0, 8):
         if (pos_r * 8 + pos_c) == position:
           new_tile_r = pos_r
           new_tile_c = pos_c
-    logger.info('position is ({0},{1})'.format(new_tile_r, new_tile_c))
+    
+
+
     nodesList = core.load_sub_tree(active_node)
     
     nodes = {}
@@ -102,7 +104,6 @@ class PlayerMoves(PluginBase):
     logger.info('FINAL STATE: {0}: {1}'.format(gameStateName, gameStateNode))
         
     if str(gameStateName) != "OthelloGameState1":
-      #currentMoveTile = core.get_parent(nodes[core.get_pointer_path(gameStateNode, 'currentMove')])
       currentMovePath = core.get_pointer_path(gameStateNode, 'currentMove')
       for node in nodesList:
         if node['nodePath'] == currentMovePath:
@@ -141,9 +142,6 @@ class PlayerMoves(PluginBase):
       index = int(index_str)
     new_index = index + 1
     newStateName = gameStateName.rstrip(index_str) + str(new_index)
-    
-    
-    #new_state = core.create_node({'parent':META['GameFolder'], 'base':META['OthelloGameState']})
     
     # Copy the contents of the current node into the new node
     new_state = core.copy_node(gameState, META['OthelloGame'])
