@@ -3,7 +3,7 @@ import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { useState } from 'react';
 import CONSTANTS from 'constants.js';
 
-export default function Tile({player, piece, position, win, position2path}) {
+export default function Tile({player, piece, position, win}) {
 
     const [hasMouse, setMouse, onHasMouseChange] = useState(false);
 
@@ -22,7 +22,7 @@ export default function Tile({player, piece, position, win, position2path}) {
     }
 
     const getPiece = () => {
-        console.log('GP:',player,piece,position,win,position2path);
+        console.log('GP:',player,piece,position,win);
         const styleBlack = {fontSize:'70px', paddingLeft:'8px',paddingTop:'2px'};
         const styleWhite = {fontSize:'70px', paddingLeft:'13px',paddingTop:'2px'};
         const dStyle = player === CONSTANTS.PLAYER.BLACK ? 

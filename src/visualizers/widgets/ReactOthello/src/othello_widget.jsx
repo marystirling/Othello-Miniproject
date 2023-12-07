@@ -2,7 +2,7 @@ import React, {useCallback, useState} from 'react';
 import Board from './board';
 import CONSTANTS from 'constants.js';
 
-export default function Othello({player, win, board, position2path}) {
+export default function Othello({player, win, board}) {
     const getLabel = () => {
         if(!win) {
             let finished = true;
@@ -27,7 +27,7 @@ export default function Othello({player, win, board, position2path}) {
             } else {
                 return `Player White's Turn (Black: ${totalBlacks}, White: ${totalWhites})`;
             }
-        } else {
+        } else { // think we should get count and then display win
             if(win.player === CONSTANTS.PLAYER.BLACK) {
                 return 'Player black won!';
             } else {
@@ -38,7 +38,7 @@ export default function Othello({player, win, board, position2path}) {
     return (
     <div style={{ width: '100%', height: '100%', fontFamily:'fantasy', fontSize:'36px', fontWeight:'bold'}}>
         {getLabel()}
-        <Board player={player} board={board} win={win} position2path={position2path}/>
+        <Board player={player} board={board} win={win}/>
     </div>
     );
 }

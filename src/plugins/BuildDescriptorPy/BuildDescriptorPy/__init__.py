@@ -95,7 +95,7 @@ class BuildDescriptorPy(PluginBase):
     
   
   # function to get descriptor
-  # {'player': colorString, 'board': [flattened array with piece color], 'position2path': nodePath}
+  # {'player': colorString, 'board': [flattened array with piece color]}
   def buildDescriptor(self, stateNode, validTiles):
     active_node = self.active_node
     core = self.core
@@ -140,10 +140,7 @@ class BuildDescriptorPy(PluginBase):
       # TODO: do it here
     
     # collect piece color if a tile contains one, if not empty ('-')
-    # also gives paths to each tile for player2Path in descriptor (hash_map)
     allTilePaths = core.get_children_paths(boardNode)
-    logger.info(allTilePaths)
-    hash_map = {}
     for tilePath in allTilePaths:
       tileNode = nodes[tilePath]
       if core.is_instance_of(tileNode, META['Tile']):
@@ -156,14 +153,10 @@ class BuildDescriptorPy(PluginBase):
           pieceColor = core.get_attribute(pieceNode, 'color')
           # add that pieceColor to flattened array 
           board[row * 8 + column] = pieceColor
-        hash_map[row * 8 + column] = tilePath
-    
-    
-    
+
     # return descriptor data structure 
     descriptor = {'player': currentPlayer,
-                  'board': board,
-                  'position2path': hash_map}
+                  'board': board}
     
     return descriptor
   
