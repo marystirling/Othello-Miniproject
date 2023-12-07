@@ -62,9 +62,9 @@ class BuildDescriptorPy(PluginBase):
     logger.info('current game state: {0}, {1}'.format(currentGameState, currentGameStateNode))
     
     # call validTiles function to get a list of validTiles left to play
-    validTiles = self.validTiles(currentGameStateNode)
+    validTiles, connections = self.validTiles(currentGameStateNode)
     logger.info(self.validTiles(currentGameStateNode))
-  
+    logger.info('CONNECTIONS IN BUILD DESCRIPTOR: {0}'.format(connections))
     # call countingPieces function to get total whites and blacks
     totalWhites, totalBlacks = self.countingPieces(currentGameStateNode)
     logger.info('totalWhites: {0}'.format(totalWhites))
@@ -79,6 +79,7 @@ class BuildDescriptorPy(PluginBase):
     
     descriptor = self.buildDescriptor(currentGameStateNode, validTiles)
     descriptor['win'] = winner
+    descriptor['flips'] = connections
     logger.info('descriptor: {0}'.format(descriptor))
     self.create_message(active_node, json.dumps(descriptor))
     
@@ -280,6 +281,7 @@ class BuildDescriptorPy(PluginBase):
     
     
     validTiles = []
+    connections = {}
     final_flips = []
     for r in range(0, 8):
       for c in range(0, 8):
@@ -304,6 +306,10 @@ class BuildDescriptorPy(PluginBase):
               if found_opposite_color:
                 for flip in potential_flips:
                   if (currRow, currColumn) != flip:
+                    if currRow * 8 + currColumn in connections:
+                      connections[currRow * 8 + currColumn].append((flip[0], flip[1]))
+                    else: 
+                      connections[currRow * 8 + currColumn] = [(flip[0], flip[1])]
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
@@ -327,6 +333,10 @@ class BuildDescriptorPy(PluginBase):
               if found_opposite_color:
                 for flip in potential_flips:
                   if (currRow, currColumn) != flip:
+                    if currRow * 8 + currColumn in connections:
+                      connections[currRow * 8 + currColumn].append((flip[0], flip[1]))
+                    else: 
+                      connections[currRow * 8 + currColumn] = [(flip[0], flip[1])]
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
@@ -349,6 +359,10 @@ class BuildDescriptorPy(PluginBase):
               if found_opposite_color:
                 for flip in potential_flips:
                   if (currRow, currColumn) != flip:
+                    if currRow * 8 + currColumn in connections:
+                      connections[currRow * 8 + currColumn].append((flip[0], flip[1]))
+                    else: 
+                      connections[currRow * 8 + currColumn] = [(flip[0], flip[1])]
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
@@ -371,6 +385,10 @@ class BuildDescriptorPy(PluginBase):
               if found_opposite_color:
                 for flip in potential_flips:
                   if (currRow, currColumn) != flip:
+                    if currRow * 8 + currColumn in connections:
+                      connections[currRow * 8 + currColumn].append((flip[0], flip[1]))
+                    else: 
+                      connections[currRow * 8 + currColumn] = [(flip[0], flip[1])]
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
@@ -393,6 +411,10 @@ class BuildDescriptorPy(PluginBase):
               found_same_color = True
               if found_opposite_color:
                 for flip in potential_flips:
+                  if currRow * 8 + currColumn in connections:
+                      connections[currRow * 8 + currColumn].append((flip[0], flip[1]))
+                  else: 
+                      connections[currRow * 8 + currColumn] = [(flip[0], flip[1])]
                   final_flips.append(flip)
             whichRow += 1
             whichCol += 1
@@ -415,6 +437,10 @@ class BuildDescriptorPy(PluginBase):
               if found_opposite_color:
                 for flip in potential_flips:
                   if (currRow, currColumn) != flip:
+                    if currRow * 8 + currColumn in connections:
+                      connections[currRow * 8 + currColumn].append((flip[0], flip[1]))
+                    else: 
+                      connections[currRow * 8 + currColumn] = [(flip[0], flip[1])]
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
@@ -439,6 +465,10 @@ class BuildDescriptorPy(PluginBase):
               if found_opposite_color:
                 for flip in potential_flips:
                   if (currRow, currColumn) != flip:
+                    if currRow * 8 + currColumn in connections:
+                      connections[currRow * 8 + currColumn].append((flip[0], flip[1]))
+                    else: 
+                      connections[currRow * 8 + currColumn] = [(flip[0], flip[1])]
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
@@ -464,6 +494,10 @@ class BuildDescriptorPy(PluginBase):
               if found_opposite_color:
                 for flip in potential_flips:
                   if (currRow, currColumn) != flip:
+                    if currRow * 8 + currColumn in connections:
+                      connections[currRow * 8 + currColumn].append((flip[0], flip[1]))
+                    else: 
+                      connections[currRow * 8 + currColumn] = [(flip[0], flip[1])]
                     logger.info('({0},{1}) flips ({2}, {3})'.format(currRow, currColumn, flip[0], flip[1]))
                     final_flips.append(flip)
                     validTiles.append((currRow, currColumn))
@@ -471,5 +505,5 @@ class BuildDescriptorPy(PluginBase):
             whichCol += 1
 
     logger.info('IN BUILD DESCRIPTOR VALID TILES: {0}'.format(validTiles))
-    return validTiles
+    return validTiles, connections
     #self.create_message(self.active_node, 'ValidTilesResult', validTiles)
