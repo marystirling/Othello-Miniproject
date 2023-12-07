@@ -232,45 +232,57 @@ class BuildDescriptorPy(PluginBase):
     for node in nodesList:
       nodes[core.get_path(node)] = node
     
-    # collect board information of tiles and possible pieces/connections
+# collect board information of tiles and possible pieces/connections
     board = []
     # dictionary of rows to organize board by rows
     rows = {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7:{}}
-    for node in nodesList:
-      if (core.is_instance_of(node, META['Tile'])):
-        tileRow = core.get_attribute(node, 'row')
-        tileColumn = core.get_attribute(node, 'column')
-        tilePiece = core.get_children_paths(node)
-        tilePieceColor = "none"
-        # gets color of tile if there is a piece on that tile; if not, stays 'none'
-        for tilePieceNode in nodesList:
-          if len(tilePiece) > 0:
-            if tilePieceNode['nodePath'] == tilePiece[0]:
-              tilePieceColor = core.get_attribute(tilePieceNode, 'color')
-          if tileRow == 0:
-            rows[0][tileColumn] = tilePieceColor
-          elif tileRow == 1:
-            rows[1][tileColumn] = tilePieceColor
-          elif tileRow == 2:
-            rows[2][tileColumn] = tilePieceColor
-          elif tileRow == 3:
-            rows[3][tileColumn] = tilePieceColor
-          elif tileRow == 4:
-            rows[4][tileColumn] = tilePieceColor
-          elif tileRow == 5:
-            rows[5][tileColumn] = tilePieceColor
-          elif tileRow == 6:
-            rows[6][tileColumn] = tilePieceColor
-          elif tileRow == 7:
-            rows[7][tileColumn] = tilePieceColor    
-    for r in range(0, 8):
-      row = []
-      for c in range(0, 8):
-        row.append({"color": rows[r][c]})
-      # add each row to board list
-      board.append(row)
+    for boardNode in nodesList:
+        if (core.is_instance_of(boardNode, META['Board'])):
+            allTiles = core.get_children_paths(boardNode)
+            for tile in allTiles:
+                for currentTileNode in nodesList:
+                    if currentTileNode['nodePath'] == tile:
+                        tileRow = core.get_attribute(currentTileNode, 'row')
+                        tileColumn = core.get_attribute(currentTileNode, 'column')
+                        tilePiece = core.get_children_paths(currentTileNode)
+                        tilePieceColor = "none"
+                        # gets color of tile if there is a piece on that tile; if not, stays 'none'
+                        for tilePieceNode in nodesList:
+                            if len(tilePiece) > 0:
+                                if tilePieceNode['nodePath'] == tilePiece[0]:
+                                    tilePieceColor = core.get_attribute(tilePieceNode, 'color')
+                                    break
+                    
+                        # organize tile colors by their row number 
+                        if tileRow == 0:
+                            rows[0][tileColumn] = tilePieceColor
+                        elif tileRow == 1:
+                            rows[1][tileColumn] = tilePieceColor
+                        elif tileRow == 2:
+                            rows[2][tileColumn] = tilePieceColor
+                        elif tileRow == 3:
+                            rows[3][tileColumn] = tilePieceColor
+                        elif tileRow == 4:
+                            rows[4][tileColumn] = tilePieceColor
+                        elif tileRow == 5:
+                            rows[5][tileColumn] = tilePieceColor
+                        elif tileRow == 6:
+                            rows[6][tileColumn] = tilePieceColor
+                        elif tileRow == 7:
+                            rows[7][tileColumn] = tilePieceColor        
+                        
+                        break
+            
+           
+            for r in range(0, 8):
+              row = []
+              for c in range(0, 8):
+                row.append({"color": rows[r][c]})
+              # at each row to board list
+              board.append(row)
+    
    
-    logger.info(board)
+    
     
     
     # get player turn and opposite player
@@ -493,6 +505,6 @@ class BuildDescriptorPy(PluginBase):
             whichRow -= 1
             whichCol += 1
 
-    logger.info(validTiles)
+    logger.info('IN BUILD DESCRIPTOR VALID TILES: {0}'.format(validTiles))
     return validTiles
     #self.create_message(self.active_node, 'ValidTilesResult', validTiles)
