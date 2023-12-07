@@ -98,6 +98,7 @@ class PlayerMoves(PluginBase):
         if index and int(index) > maxIndex:
             logger.info('go in here')
             gameStateNode = potentialGameState
+            gameState = potentialGameState
             gameStateName = stateName
             maxIndex = int(index)
     logger.info('FINAL STATE: {0}: {1}'.format(gameStateName, gameStateNode))
