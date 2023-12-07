@@ -3,13 +3,13 @@ import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { useState } from 'react';
 import CONSTANTS from 'constants.js';
 
-export default function Tile({player, piece, position, win}) {
+export default function Tile({player, piece, position, win, flips}) {
 
     const [hasMouse, setMouse, onHasMouseChange] = useState(false);
 
     const onTileClick = () => {
         if (piece === CONSTANTS.PIECE.VALID_MOVE) {
-            WEBGME_CONTROL.playerMoves(player, position);
+            WEBGME_CONTROL.playerMoves(player, position, flips);
         }
     }
 

@@ -113,7 +113,7 @@ define([
         }
     };
 
-    ReactOthelloControl.prototype.playerMoves = function (player, position) {
+    ReactOthelloControl.prototype.playerMoves = function (player, position, flips) {
         
         const {_client, _currentNodeId, _logger} = this;
         if (typeof _currentNodeId === 'string') {
