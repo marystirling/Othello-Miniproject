@@ -126,7 +126,8 @@ define([
             _client.runServerPlugin('PlayerMoves', context, (err, result)=>{
                 // console.log('export:', err, result);
                 if (err === null && result && result.success) {
-                    const descriptor = this._descriptor;
+                    //const descriptor = this._descriptor;
+                    this._createDescriptor();
                     //TODO: - there is nothing to do as the plugin updated the model
                 } else {
                     //TODO - make a proper way of handling this

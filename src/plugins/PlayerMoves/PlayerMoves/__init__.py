@@ -81,30 +81,40 @@ class PlayerMoves(PluginBase):
     # GameState contains Board
     gameState = core.get_parent(board)
     logger.info('game state::::: {0}'.format(gameState))
-    # get all nodes at gameState node
-    nodesList = core.load_sub_tree(gameState)
-    
-    # get the game state
-    for gameStateNode in nodesList:
-     
-      if (core.is_instance_of(gameStateNode, META['GameState'])):
-        gameStateName = core.get_attribute(gameStateNode, 'state_name')
-        logger.info('game state: {0}'.format(gameStateName))
+    othelloGame = core.get_parent(gameState)
+    logger.info('othello game::: {0}'.format(gameState))
+
+    # get OthelloGameState with highest index
+    currentGameState = 'OthelloGameState1'
+    currentGameStateNode = ''
+    maxIndex = 0
+    allGameStates = core.load_children(othelloGame)
+    for potentialGameState in allGameStates:
+      if core.is_instance_of(potentialGameState, META['GameState']):
+        stateName = core.get_attribute(potentialGameState, 'state_name')
+        logger.info('POTENTIAL STATE: {0}'.format(core.get_attribute(potentialGameState, 'state_name')))
+        stateName = core.get_attribute(potentialGameState, 'state_name')
+        index = ''.join([char for char in stateName if char.isdigit()])
+        if index and int(index) > maxIndex:
+            logger.info('go in here')
+            gameStateNode = potentialGameState
+            gameStateName = stateName
+            maxIndex = int(index)
+    logger.info('FINAL STATE: {0}: {1}'.format(gameStateName, gameStateNode))
         
-        
-        if str(gameStateName) != "OthelloGameState1":
-          #currentMoveTile = core.get_parent(nodes[core.get_pointer_path(gameStateNode, 'currentMove')])
-          currentMovePath = core.get_pointer_path(gameStateNode, 'currentMove')
-          for node in nodesList:
-            if node['nodePath'] == currentMovePath:
-              currentMoveNode = node
-              currentMove = core.get_attribute(currentMoveNode, 'color')
-        # retrieve pointer path to currentPlayer 
-        currentPlayerPath = core.get_pointer_path(gameStateNode, 'currentPlayer')
-        for node in nodesList:
-          if node['nodePath'] == currentPlayerPath:
-            currentPlayerNode = node
-            currentPlayer = core.get_attribute(currentPlayerNode, 'color')
+    if str(gameStateName) != "OthelloGameState1":
+      #currentMoveTile = core.get_parent(nodes[core.get_pointer_path(gameStateNode, 'currentMove')])
+      currentMovePath = core.get_pointer_path(gameStateNode, 'currentMove')
+      for node in nodesList:
+        if node['nodePath'] == currentMovePath:
+          currentMoveNode = node
+          currentMove = core.get_attribute(currentMoveNode, 'color')
+    # retrieve pointer path to currentPlayer 
+    currentPlayerPath = core.get_pointer_path(gameStateNode, 'currentPlayer')
+    for node in nodesList:
+      if node['nodePath'] == currentPlayerPath:
+        currentPlayerNode = node
+        currentPlayer = core.get_attribute(currentPlayerNode, 'color')
 
         
         if currentPlayer == 'black':
