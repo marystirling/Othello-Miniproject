@@ -66,10 +66,7 @@ export default function Tile({player, piece, position, win}) {
             borderColor:'black',
             borderWidth:'2px',
             border:'solid'};
-            // #87CEEB
-            if (win && win.positions.indexOf(position) !== -1) {
-                style.backgroundColor = '#EE2E31';
-            } else if (piece === CONSTANTS.PIECE.VALID_MOVE) {
+            if (piece === CONSTANTS.PIECE.VALID_MOVE) {
                 style.backgroundColor = '#87CEEB';
             }else if(hasMouse) {
                 if(piece === CONSTANTS.PIECE.EMPTY) {

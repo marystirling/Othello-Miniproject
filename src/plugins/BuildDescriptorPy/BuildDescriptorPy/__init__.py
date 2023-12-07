@@ -73,20 +73,12 @@ class BuildDescriptorPy(PluginBase):
     logger.info('totalWhites from main: {0}'.format(totalWhites))
     logger.info('totalBlacks from main: {0}'.format(totalBlacks))
     
-    # check to see if win Condition (no Valid Tiles)
-    winner = None
+    # check to see if win Condition (no Valid Tiles)  
     if len(validTiles) == 0:
-      # white wins
-      if totalWhites > totalBlacks:
-        winner = 'white'
-      # black wins
-      elif totalBlacks > totalWhites:
-        winner = 'black'
-      # tie - by default white wins
-      else:
-        winner = 'white'
+      winner = True
     else:
-      logger.info('no winner yet!')
+      winner = False
+    
     
     descriptor = self.buildDescriptor(currentGameStateNode, validTiles)
     descriptor['win'] = winner
@@ -153,10 +145,11 @@ class BuildDescriptorPy(PluginBase):
           pieceColor = core.get_attribute(pieceNode, 'color')
           # add that pieceColor to flattened array 
           board[row * 8 + column] = pieceColor
-
-    # return descriptor data structure 
+    
+    
     descriptor = {'player': currentPlayer,
-                  'board': board}
+                  'board': board,
+                }
     
     return descriptor
   

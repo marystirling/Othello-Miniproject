@@ -4,35 +4,30 @@ import CONSTANTS from 'constants.js';
 
 export default function Othello({player, win, board}) {
     const getLabel = () => {
-        if(!win) {
-            let finished = true;
             let totalWhites = 0;
             let totalBlacks = 0;
-            board.forEach(piece => {
-                if(piece === CONSTANTS.PIECE.EMPTY) {
-                    finished = false;
-                }
-                else if (piece === CONSTANTS.PIECE.BLACK) {
-                    totalBlacks = totalBlacks + 1;
-                } else if (piece === CONSTANTS.PIECE.WHITE) {
-                    totalWhites = totalWhites + 1;
-                }
-            });
-            if(finished) {
-                return 'Game ended in tie.';
+        board.forEach(piece => {
+            if (piece === CONSTANTS.PIECE.BLACK) {
+                totalBlacks = totalBlacks + 1;
+            } else if (piece === CONSTANTS.PIECE.WHITE) {
+                totalWhites = totalWhites + 1;
             }
-            
+        });
+        if(!win) {
             if (player === CONSTANTS.PLAYER.BLACK) {
                 return `Player Black's Turn (Black: ${totalBlacks}, White: ${totalWhites})`;
             } else {
                 return `Player White's Turn (Black: ${totalBlacks}, White: ${totalWhites})`;
             }
-        } else { // think we should get count and then display win
-            if(win.player === CONSTANTS.PLAYER.BLACK) {
-                return 'Player black won!';
+        } else {
+            if (totalBlacks > totalWhites) {
+                return 'Player black won!'
+            } else if (totalWhites > totalBlacks) {
+                return 'Player white won!'
             } else {
-                return 'Player white won!';
+                return 'Game ended in tie.'
             }
+            
         }
     }
     return (
