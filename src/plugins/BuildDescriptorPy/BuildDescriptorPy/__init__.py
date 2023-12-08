@@ -32,20 +32,21 @@ class BuildDescriptorPy(PluginBase):
     currentGameStateNode = ''
     gameChildren = core.load_children(active_node)
     
-    # if only one game state children of OthelloGame, then OthelloGameState1
+    # if only one game state children of OthelloGame, then 1
     # find the most recent game state by looking at OthelloGameState index
-    # default is OthelloGameState1 (first state automatically)
-    currentGameState = 'OthelloGameState1'
+    # default is 1 (first state automatically)
+    # trash states from undo will have index 0 so they will never be accessed
+    currentGameState = 1
     currentGameStateNode = ''
     maxIndex = 0
     for stateNode in gameChildren:
         if core.is_instance_of(stateNode, META['OthelloGameState']):
-            stateName = core.get_attribute(stateNode, 'state_name')
-            index = ''.join([char for char in stateName if char.isdigit()])
-            if index and int(index) > maxIndex:
+            index = core.get_attribute(stateNode, 'state_num')
+            logger.info('STATE NUM IS: {0}'.format(index))
+            if index and index > maxIndex:
                 currentGameStateNode = stateNode
-                currentGameState = stateName
-                maxIndex = int(index)
+                currentGameState = index
+                maxIndex = index
 
         
           
