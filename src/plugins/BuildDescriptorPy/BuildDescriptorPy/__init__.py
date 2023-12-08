@@ -53,10 +53,10 @@ class BuildDescriptorPy(PluginBase):
     logger.info('current game state: {0}, {1}'.format(currentGameState, currentGameStateNode))
     
     # call validTiles function to get a list of validTiles left to play
-    validTiles, connections, currentPlayer = self.validTiles(currentGameStateNode)
+    validTiles, connections, currentPlayer, allTileNodes = self.validTiles(currentGameStateNode)
   
     # call countingPieces function to get total whites and blacks
-    totalWhites, totalBlacks = self.countingPieces(currentGameStateNode)
+    totalWhites, totalBlacks = self.countingPieces(allTileNodes)
 
     
     # check to see if win Condition (no Valid Tiles)  
@@ -66,7 +66,7 @@ class BuildDescriptorPy(PluginBase):
       winner = False
     
     
-    descriptor = self.buildDescriptor(currentGameStateNode, validTiles)
+    descriptor = self.buildDescriptor(currentGameStateNode, validTiles, allTileNodes)
     descriptor['win'] = winner
     descriptor['player'] = currentPlayer
     descriptor['flips'] = connections
@@ -78,20 +78,14 @@ class BuildDescriptorPy(PluginBase):
   
   # function to get descriptor
   # {'player': colorString, 'board': [flattened array with piece color]}
-  def buildDescriptor(self, stateNode, validTiles):
+  def buildDescriptor(self, stateNode, validTiles, allTileNodes):
     active_node = self.active_node
     core = self.core
     logger = self.logger
     self.namespace = None
     META = self.META
 
-    nodesList = core.load_sub_tree(stateNode)
-    for potentialBoard in nodesList:
-      if core.is_instance_of(potentialBoard, META['Board']):
-        boardNode = potentialBoard
     
-    nodes = {}
-    logger.info('in buildDescriptor valid tiles: {0}'.format(validTiles))
     validTilesFlattened = []
     for validTile in validTiles:
       validRow = validTile[0]
@@ -99,10 +93,7 @@ class BuildDescriptorPy(PluginBase):
       validTilesFlattened.append(validRow * 8 + validCol)
 
     
-    # collect all nodes path
-    for node in nodesList:
-      nodes[core.get_path(node)] = node
-      
+    
     # flattened array of 64 pieces
     # initialzie each element with an empty piece ('-') - no piece placed
     board = ['-'] * 64
@@ -111,17 +102,13 @@ class BuildDescriptorPy(PluginBase):
       board[i] = 'valid_move'
     
     # collect piece color if a tile contains one, if not empty ('-')
-    allTilePaths = core.get_children_paths(boardNode)
-    for tilePath in allTilePaths:
-      tileNode = nodes[tilePath]
+    for tileNode in allTileNodes:
       if core.is_instance_of(tileNode, META['Tile']):
         row = core.get_attribute(tileNode, 'row')
         column = core.get_attribute(tileNode, 'column')
-        pieceNodes = core.get_children_paths(tileNode)
-        
+        pieceNodes = core.load_children(tileNode)
         if len(pieceNodes) > 0:
-          pieceNode = nodes[pieceNodes[0]]
-          pieceColor = core.get_attribute(pieceNode, 'color')
+          pieceColor = core.get_attribute(pieceNodes[0], 'color')
           # add that pieceColor to flattened array 
           board[row * 8 + column] = pieceColor
     
@@ -131,25 +118,19 @@ class BuildDescriptorPy(PluginBase):
     return descriptor
   
   # function to count the total white and black pieces on board -> returns tuple
-  def countingPieces(self, stateNode):
+  def countingPieces(self, allTileNodes):
     active_node = self.active_node
     core = self.core
     logger = self.logger
     self.namespace = None
     META = self.META
     
-    stateChildren = core.load_children(stateNode)
-    for potentialBoard in stateChildren:
-      if core.is_instance_of(potentialBoard, META['Board']):
-        boardNode = potentialBoard
-    
-    boardChildren = core.load_children(boardNode)
     totalWhites = 0
     totalBlacks = 0
     
-    for node in boardChildren:
-      if (core.is_instance_of(node, META['Tile'])):
-        tileChildren = core.load_children(node)
+    for tileNode in allTileNodes:
+      if (core.is_instance_of(tileNode, META['Tile'])):
+        tileChildren = core.load_children(tileNode)
         tilePieceColor = "none"
         # gets color of tile if there is a piece on that tile; if not, stays 'none'
         if len(tileChildren) > 0:
@@ -209,8 +190,6 @@ class BuildDescriptorPy(PluginBase):
                 rows[6][tileColumn] = tilePieceColor
             elif tileRow == 7:
                 rows[7][tileColumn] = tilePieceColor        
-            
-            # break
         
            
     for r in range(0, 8):
@@ -465,5 +444,5 @@ class BuildDescriptorPy(PluginBase):
             whichCol += 1
 
     logger.info('IN BUILD DESCRIPTOR VALID TILES: {0}'.format(validTiles))
-    return validTiles, connections, currentPlayer
+    return validTiles, connections, currentPlayer, allTileNodes
 
