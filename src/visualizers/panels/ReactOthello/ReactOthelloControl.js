@@ -276,7 +276,7 @@ define([
         this._toolbarItems.push(this.$btnNewGame);
         this.$btnNewGame.hide();
 
-        this.$btnNewGame = toolBar.addButton({
+        this.$btnUndoGame = toolBar.addButton({
             title: 'Undo',
             icon: 'glyphicon glyphicon-circle-arrow-left',
             clickFn: function (/*data*/) {
@@ -288,10 +288,7 @@ define([
                 _client.runServerPlugin('Undo', context, (err, result)=>{
                     // console.log('export:', err, result);
                     if (err === null && result && result.success) {
-                        //TODO: - there is nothing to do as the plugin updated the model
-                        const prevGameState = result.messages[0].message;
-                        WebGMEGlobal.State.registerActiveObject(prevGameState);
-                        WebGMEGlobal.State.registerActiveVisualizer('ReactOthello');
+                        const descriptor = this._descriptor;
                     } else {
                         //TODO - make a proper way of handling this
                         _logger.error('Failed to initiate undo', err);
@@ -299,8 +296,8 @@ define([
                 });
             }
         });
-        this._toolbarItems.push(this.$btnNewGame);
-        this.$btnNewGame.hide();
+        this._toolbarItems.push(this.$btnUndoGame);
+        this.$btnUndoGame.hide();
 
         /************** Checkbox example *******************/
 

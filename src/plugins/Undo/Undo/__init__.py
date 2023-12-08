@@ -24,46 +24,30 @@ class Undo(PluginBase):
         self.namespace = None
         META = self.META
 
-        gameChildren = core.load_children(active_node)
+        # starts in Game Folder - contains OthelloGame
+        gameFolderChildren = core.load_children(active_node)
+        for othelloGameNode in gameFolderChildren:
+           if core.is_instance_of(othelloGameNode, META['OthelloGame']):
+              allGameStates = core.load_children(othelloGameNode)
+              break
         
+        logger.info(othelloGameNode)
         maxIndex = 0
-        for potentialGameStateNode in gameChildren:
+        currentGameState = 1
+        for potentialGameState in allGameStates:
+          if core.is_instance_of(potentialGameState, META['GameState']):
+            index = core.get_attribute(potentialGameState, 'state_num')
+            if index and index > maxIndex:
+              currentGameStateNum = index
+              maxIndex = index
+              currentGameState = potentialGameState
            
 
-          currentGameStateName = core.get_attribute(potentialGameStateNode, 'state_name')
-        
-        # only undo if not the first state
-        if currentGameStateName != 'OthelloGameState1':
-            
-            # retrieve index off of current state
-            numeric_part = ""
-            index = len(currentGameStateName) - 1
-            while index >= 0 and currentGameStateName[index].isdigit():
-                numeric_part = currentGameStateName[index] + numeric_part
-                index -= 1
-
-            if numeric_part:
-                currStateIndex = int(numeric_part)
-                logger.info(currStateIndex)
-            
-            new_index = currStateIndex - 1
-            
-            # get state name with one less index
-            newGameStateName = 'OthelloGameState' + str(new_index)
-            
-            # retrieve old state 
-            othelloGame = core.get_parent(currentGameState)
-            logger.info(othelloGame)
-            
-            all_states = core.load_children(othelloGame)
-            logger.info(all_states)
-            
-            # find correct state want to undo to (one previous)
-            for stateNode in all_states:
-              if core.is_instance_of(stateNode, META['OthelloGameState']):
-                thisStateName = core.get_attribute(stateNode, 'state_name')
-                if thisStateName == newGameStateName:
-                  logger.info(thisStateName)
-                  new_state = core.copy_node(stateNode, META['OthelloGame'])
-                  core.set_attribute(currentGameState, 'state_name', 'TRASH_STATE')
-                  self.util.save(self.root_node, self.commit_hash, self.branch_name, 'new game state')
+        logger.info(currentGameStateNum)
+        # only undo if not the first state (default initial state has index of 1)
+        if currentGameStateNum != 1:
+          
+          # set a value of 0 since will never access state again (default is 1 and that state will always be there)
+          # thus, all valid states have state_num >= 1
+          core.set_attribute(currentGameState, 'state_num', 0)
+          self.util.save(self.root_node, self.commit_hash, self.branch_name, 'undo last move')
