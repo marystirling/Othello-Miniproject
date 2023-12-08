@@ -39,18 +39,12 @@ class PlayerMoves(PluginBase):
         if (pos_r * 8 + pos_c) == position:
           new_tile_r = pos_r
           new_tile_c = pos_c
+          break
     
+    gameChildren = core.load_sub_tree(active_node)
 
-
-    nodesList = core.load_sub_tree(active_node)
-    
-    nodes = {}
-    
-    # collect all nodes path
-    for node in nodesList:
-      nodes[core.get_path(node)] = node
-    
-    for tileNode in nodesList: 
+    # getting the current tile node that was clicked based on our config above
+    for tileNode in gameChildren: 
       if core.is_instance_of(tileNode, META['Tile']):
         tileRow = core.get_attribute(tileNode, 'row')
         tileCol = core.get_attribute(tileNode, 'column')
@@ -60,24 +54,10 @@ class PlayerMoves(PluginBase):
           active_node = tileNode
           currentTile = active_node
           break
-        
-      
-    paths = core.get_children_paths(active_node)
 
     logger.info('tile row: {0}'.format(currRow))
     logger.info('tile column: {0}'.format(currColumn))
-    
-    # checks to see if the tile is empty (does not contain a piece)
-    tilePiece = core.get_children_paths(currentTile)
-    
-    # if tile contains a piece, returns "false" as the next piece cannot be placed here
-    if len(tilePiece) != 0:
-      logger.error('TILE IS NOT VALID PLACE FOR UPCOMING PIECE')
-      return
-    else:
-      logger.info('tile does not contain piece')
 
-    
     # Board contains Tile
     board = core.get_parent(currentTile)
     
@@ -93,52 +73,41 @@ class PlayerMoves(PluginBase):
     for potentialGameState in allGameStates:
       if core.is_instance_of(potentialGameState, META['GameState']):
         index = core.get_attribute(potentialGameState, 'state_num')
-        logger.info('POTENTIAL STATE: {0}'.format(index))
         if index and index > maxIndex:
             gameStateNode = potentialGameState
             gameState = potentialGameState
             gameStateNum = index
             maxIndex = index
-    logger.info('FINAL STATE: {0}: {1}'.format(gameStateNum, gameStateNode))
+    logger.info('game state index retrieved: {0}'.format(gameStateNum))
     
-    if gameStateNum != 1:
-      currentMovePath = core.get_pointer_path(gameStateNode, 'currentMove')
-      for node in nodesList:
-        if node['nodePath'] == currentMovePath:
-          currentMoveNode = node
-          currentMove = core.get_attribute(currentMoveNode, 'color')
+    
     # retrieve pointer path to currentPlayer 
+    gameStateChildren = core.load_children(gameStateNode)
     currentPlayerPath = core.get_pointer_path(gameStateNode, 'currentPlayer')
-    for node in nodesList:
+    for node in gameStateChildren:
       if node['nodePath'] == currentPlayerPath:
         currentPlayerNode = node
         currentPlayer = core.get_attribute(currentPlayerNode, 'color')
 
-        
         if currentPlayer == 'black':
           opposite = 'white'
         elif currentPlayer == 'white':
           opposite = 'black'
         
-        
-    stateChildren = core.load_sub_tree(gameStateNode)
+        break
+
     logger.info('current player: {0}'.format(currentPlayer))
     logger.info('opposing player: {0}'.format(opposite))
 
-   
-    
-    
+
     # print out result value if next piece can be placed at this tile
     if len(final_flips) > 0:
       logger.info('flips {0} at these (row, column) pairs: {1}'.format(opposite, final_flips))
    
 
-    logger.info('IN PLAYER MOVES VALID TILES: {0}'.format(final_flips))
-
     # get next game state num
-    logger.info('GAME STATE NUM HERE: {0}'.format(gameStateNum))
     newGameStateNum = gameStateNum + 1
-    logger.info('NEW GAME STATE NUM HERE: {0}'.format(newGameStateNum))
+    logger.info('new game state index state_num: {0}'.format(newGameStateNum))
 
     # Copy the contents of the current node into the new node
     new_state = core.copy_node(gameState, META['OthelloGame'])
@@ -163,6 +132,7 @@ class PlayerMoves(PluginBase):
             if flip[0] == thisRow and flip[1] == thisCol:
               childPiece = core.load_children(tile)
               core.set_attribute(childPiece[0], 'color', currentPlayer)
+        break
     
     # new piece on current tile is placed with currentPlayer color
     new_piece = core.create_node({'parent': parent_tile, 'base': META['Piece']})
@@ -180,6 +150,7 @@ class PlayerMoves(PluginBase):
         playerNodeColor = core.get_attribute(playerNode, 'color')
         if playerNodeColor == opposite:
           newPlayer = playerNode
+          break
     core.set_pointer(new_state, 'currentPlayer', newPlayer)
     
     self.util.save(self.root_node, self.commit_hash, self.branch_name, 'new game state')
