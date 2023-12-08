@@ -25,11 +25,6 @@ class BuildDescriptorPy(PluginBase):
     META = self.META
     import json
     
-    
-    
-    # find the current game state
-    currentGameState = ''
-    currentGameStateNode = ''
     gameChildren = core.load_children(active_node)
     
     # if only one game state children of OthelloGame, then 1
@@ -46,9 +41,9 @@ class BuildDescriptorPy(PluginBase):
             if index and index > maxIndex:
                 currentGameStateNode = stateNode
                 currentGameState = index
-                maxIndex = index
+                maxIndex = int(index) 
 
-        
+            logger.info('MAX INDEX IS NOW: {0}, {1}'.format(maxIndex, currentGameState))
           
         
     logger.info('current game state: {0}, {1}'.format(currentGameState, currentGameStateNode))
@@ -67,7 +62,7 @@ class BuildDescriptorPy(PluginBase):
       winner = False
     
     
-    descriptor = self.buildDescriptor(currentGameStateNode, validTiles, allTileNodes)
+    descriptor = self.buildDescriptor(validTiles, allTileNodes)
     descriptor['win'] = winner
     descriptor['player'] = currentPlayer
     descriptor['flips'] = connections
@@ -79,7 +74,7 @@ class BuildDescriptorPy(PluginBase):
   
   # function to get descriptor
   # {'player': colorString, 'board': [flattened array with piece color]}
-  def buildDescriptor(self, stateNode, validTiles, allTileNodes):
+  def buildDescriptor(self, validTiles, allTileNodes):
     active_node = self.active_node
     core = self.core
     logger = self.logger

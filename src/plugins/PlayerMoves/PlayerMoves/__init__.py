@@ -86,24 +86,22 @@ class PlayerMoves(PluginBase):
     othelloGame = core.get_parent(gameState)
 
     # get OthelloGameState with highest index
-    currentGameState = 'OthelloGameState1'
-    currentGameStateNode = ''
     maxIndex = 0
     allGameStates = core.load_children(othelloGame)
+    gameStateNum = 1
+    gameStateNode = ''
     for potentialGameState in allGameStates:
       if core.is_instance_of(potentialGameState, META['GameState']):
-        stateName = core.get_attribute(potentialGameState, 'state_name')
-        logger.info('POTENTIAL STATE: {0}'.format(core.get_attribute(potentialGameState, 'state_name')))
-        stateName = core.get_attribute(potentialGameState, 'state_name')
-        index = ''.join([char for char in stateName if char.isdigit()])
-        if index and int(index) > maxIndex:
+        index = core.get_attribute(potentialGameState, 'state_num')
+        logger.info('POTENTIAL STATE: {0}'.format(index))
+        if index and index > maxIndex:
             gameStateNode = potentialGameState
             gameState = potentialGameState
-            gameStateName = stateName
-            maxIndex = int(index)
-    logger.info('FINAL STATE: {0}: {1}'.format(gameStateName, gameStateNode))
-        
-    if str(gameStateName) != "OthelloGameState1":
+            gameStateNum = index
+            maxIndex = index
+    logger.info('FINAL STATE: {0}: {1}'.format(gameStateNum, gameStateNode))
+    
+    if gameStateNum != 1:
       currentMovePath = core.get_pointer_path(gameStateNode, 'currentMove')
       for node in nodesList:
         if node['nodePath'] == currentMovePath:
@@ -136,18 +134,17 @@ class PlayerMoves(PluginBase):
    
 
     logger.info('IN PLAYER MOVES VALID TILES: {0}'.format(final_flips))
-    gameStateName = str(gameStateName)
-    index_str = ''.join([char for char in gameStateName if char.isdigit()])
-    if index_str:
-      index = int(index_str)
-    new_index = index + 1
-    newStateName = gameStateName.rstrip(index_str) + str(new_index)
-    
+
+    # get next game state num
+    logger.info('GAME STATE NUM HERE: {0}'.format(gameStateNum))
+    newGameStateNum = gameStateNum + 1
+    logger.info('NEW GAME STATE NUM HERE: {0}'.format(newGameStateNum))
+
     # Copy the contents of the current node into the new node
     new_state = core.copy_node(gameState, META['OthelloGame'])
-    
+
     # Set the name of the new node separately
-    core.set_attribute(new_state, 'state_name', newStateName)
+    core.set_attribute(new_state, 'state_num', newGameStateNum)
     
     # find tile with correct row and column in new_state 
     nodesList = core.load_sub_tree(new_state)
