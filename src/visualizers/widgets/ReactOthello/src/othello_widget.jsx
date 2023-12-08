@@ -2,17 +2,8 @@ import React, {useCallback, useState} from 'react';
 import Board from './board';
 import CONSTANTS from 'constants.js';
 
-export default function Othello({player, win, board, flips}) {
+export default function Othello({player, win, board, flips, totalBlacks, totalWhites}) {
     const getLabel = () => {
-            let totalWhites = 0;
-            let totalBlacks = 0;
-        board.forEach(piece => {
-            if (piece === CONSTANTS.PIECE.BLACK) {
-                totalBlacks = totalBlacks + 1;
-            } else if (piece === CONSTANTS.PIECE.WHITE) {
-                totalWhites = totalWhites + 1;
-            }
-        });
         if(!win) {
             if (player === CONSTANTS.PLAYER.BLACK) {
                 return `Player Black's Turn (Black: ${totalBlacks}, White: ${totalWhites})`;

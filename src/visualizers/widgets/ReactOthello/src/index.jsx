@@ -8,7 +8,12 @@ const container = document.getElementById(VISUALIZER_INSTANCE_ID);
 const root = ReactDOMClient.createRoot(container);
 const onUpdateFromControl = (descriptor) => {
     console.log('rendering', descriptor);
-    root.render(<Othello player = {descriptor.player} board = {descriptor.board} win = {descriptor.win} flips = {descriptor.flips}/>);
+    root.render(<Othello player = {descriptor.player} 
+                                    board = {descriptor.board} 
+                                    win = {descriptor.win} 
+                                    flips = {descriptor.flips} 
+                                    totalBlacks = {descriptor.totalBlacks}
+                                    totalWhites = {descriptor.totalWhites}/>);
 }
 console.log('connecting to control');
 WEBGME_CONTROL.registerUpdate(onUpdateFromControl);

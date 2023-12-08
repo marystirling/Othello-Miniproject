@@ -26,19 +26,11 @@ class BuildDescriptorPy(PluginBase):
     import json
     
     
-    nodesList = core.load_sub_tree(active_node)
-    
-    nodes = {}
-    
-    # collect all nodes path
-    for node in nodesList:
-      nodes[core.get_path(node)] = node
-      
-    paths = core.get_children_paths(active_node)
     
     # find the current game state
     currentGameState = ''
     currentGameStateNode = ''
+    gameChildren = core.load_children(active_node)
     
     # if only one game state children of OthelloGame, then OthelloGameState1
     # find the most recent game state by looking at OthelloGameState index
@@ -46,8 +38,7 @@ class BuildDescriptorPy(PluginBase):
     currentGameState = 'OthelloGameState1'
     currentGameStateNode = ''
     maxIndex = 0
-    for p in paths:
-        stateNode = nodes[p]
+    for stateNode in gameChildren:
         if core.is_instance_of(stateNode, META['OthelloGameState']):
             stateName = core.get_attribute(stateNode, 'state_name')
             index = ''.join([char for char in stateName if char.isdigit()])
@@ -62,7 +53,7 @@ class BuildDescriptorPy(PluginBase):
     logger.info('current game state: {0}, {1}'.format(currentGameState, currentGameStateNode))
     
     # call validTiles function to get a list of validTiles left to play
-    validTiles, connections, currentPlayer, opposite = self.validTiles(currentGameStateNode)
+    validTiles, connections, currentPlayer = self.validTiles(currentGameStateNode)
   
     # call countingPieces function to get total whites and blacks
     totalWhites, totalBlacks = self.countingPieces(currentGameStateNode)
@@ -79,6 +70,8 @@ class BuildDescriptorPy(PluginBase):
     descriptor['win'] = winner
     descriptor['player'] = currentPlayer
     descriptor['flips'] = connections
+    descriptor['totalWhites'] = totalWhites
+    descriptor['totalBlacks'] = totalBlacks
     logger.info('descriptor: {0}'.format(descriptor))
     self.create_message(active_node, json.dumps(descriptor))
     
@@ -145,36 +138,28 @@ class BuildDescriptorPy(PluginBase):
     self.namespace = None
     META = self.META
     
-    nodesList = core.load_sub_tree(stateNode)
-    for potentialBoard in nodesList:
+    stateChildren = core.load_children(stateNode)
+    for potentialBoard in stateChildren:
       if core.is_instance_of(potentialBoard, META['Board']):
         boardNode = potentialBoard
     
-    nodes = {}
-    
-    # collect all nodes path
-    for node in nodesList:
-      nodes[core.get_path(node)] = node
-    
+    boardChildren = core.load_children(boardNode)
     totalWhites = 0
     totalBlacks = 0
     
-    for node in nodesList:
+    for node in boardChildren:
       if (core.is_instance_of(node, META['Tile'])):
-        tilePiece = core.get_children_paths(node)
+        tileChildren = core.load_children(node)
         tilePieceColor = "none"
         # gets color of tile if there is a piece on that tile; if not, stays 'none'
-        for tilePieceNode in nodesList:
-          if len(tilePiece) > 0:
-            if tilePieceNode['nodePath'] == tilePiece[0]:
-              tilePieceColor = core.get_attribute(tilePieceNode, 'color')
-              if tilePieceColor == 'white':
-                totalWhites += 1
-              elif tilePieceColor == 'black':
-                totalBlacks += 1
+        if len(tileChildren) > 0:
+            tilePieceColor = core.get_attribute(tileChildren[0], 'color')
+            if tilePieceColor == 'white':
+              totalWhites += 1
+            elif tilePieceColor == 'black':
+              totalBlacks += 1
     
 
-    #self.create_message(self.active_node, 'CountingPiecesResult', {'totalWhites': totalWhites, 'totalBlacks': totalBlacks})
     return totalWhites, totalBlacks
 
   
@@ -186,65 +171,54 @@ class BuildDescriptorPy(PluginBase):
     self.namespace = None
     META = self.META
 
-    nodesList = core.load_sub_tree(stateNode)
-    for potentialBoard in nodesList:
+    gameStateChildren = core.load_children(stateNode)
+    for potentialBoard in gameStateChildren:
       if core.is_instance_of(potentialBoard, META['Board']):
         boardNode = potentialBoard
-    
-    nodes = {}
-    
-    # collect all nodes path
-    for node in nodesList:
-      nodes[core.get_path(node)] = node
-    
     # collect board information of tiles and possible pieces/connections
     board = []
     # dictionary of rows to organize board by rows
     rows = {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7:{}}
-    for boardNode in nodesList:
-        if (core.is_instance_of(boardNode, META['Board'])):
-            allTiles = core.get_children_paths(boardNode)
-            for tile in allTiles:
-                for currentTileNode in nodesList:
-                    if currentTileNode['nodePath'] == tile:
-                        tileRow = core.get_attribute(currentTileNode, 'row')
-                        tileColumn = core.get_attribute(currentTileNode, 'column')
-                        tilePiece = core.get_children_paths(currentTileNode)
-                        tilePieceColor = "none"
-                        # gets color of tile if there is a piece on that tile; if not, stays 'none'
-                        for tilePieceNode in nodesList:
-                            if len(tilePiece) > 0:
-                                if tilePieceNode['nodePath'] == tilePiece[0]:
-                                    tilePieceColor = core.get_attribute(tilePieceNode, 'color')
-                                    break
-                    
-                        # organize tile colors by their row number 
-                        if tileRow == 0:
-                            rows[0][tileColumn] = tilePieceColor
-                        elif tileRow == 1:
-                            rows[1][tileColumn] = tilePieceColor
-                        elif tileRow == 2:
-                            rows[2][tileColumn] = tilePieceColor
-                        elif tileRow == 3:
-                            rows[3][tileColumn] = tilePieceColor
-                        elif tileRow == 4:
-                            rows[4][tileColumn] = tilePieceColor
-                        elif tileRow == 5:
-                            rows[5][tileColumn] = tilePieceColor
-                        elif tileRow == 6:
-                            rows[6][tileColumn] = tilePieceColor
-                        elif tileRow == 7:
-                            rows[7][tileColumn] = tilePieceColor        
-                        
-                        break
+
+    allTileNodes = core.load_children(boardNode)
+    for currentTileNode in allTileNodes:
+        if core.is_instance_of(currentTileNode, META['Tile']):
+            tileRow = core.get_attribute(currentTileNode, 'row')
+            tileColumn = core.get_attribute(currentTileNode, 'column')
+            tilePiece = core.load_children(currentTileNode)
+            tilePieceColor = "none"
+            # gets color of tile if there is a piece on that tile; if not, stays 'none'
+            if len(tilePiece) > 0:
+                tilePieceColor = core.get_attribute(tilePiece[0], 'color')
+                
+        
+            # organize tile colors by their row number 
+            if tileRow == 0:
+                rows[0][tileColumn] = tilePieceColor
+            elif tileRow == 1:
+                rows[1][tileColumn] = tilePieceColor
+            elif tileRow == 2:
+                rows[2][tileColumn] = tilePieceColor
+            elif tileRow == 3:
+                rows[3][tileColumn] = tilePieceColor
+            elif tileRow == 4:
+                rows[4][tileColumn] = tilePieceColor
+            elif tileRow == 5:
+                rows[5][tileColumn] = tilePieceColor
+            elif tileRow == 6:
+                rows[6][tileColumn] = tilePieceColor
+            elif tileRow == 7:
+                rows[7][tileColumn] = tilePieceColor        
             
+            # break
+        
            
-            for r in range(0, 8):
-              row = []
-              for c in range(0, 8):
-                row.append({"color": rows[r][c]})
-              # at each row to board list
-              board.append(row)
+    for r in range(0, 8):
+      row = []
+      for c in range(0, 8):
+        row.append({"color": rows[r][c]})
+      # at each row to board list
+      board.append(row)
     
     # get player turn and opposite player
     gameState = core.get_parent(boardNode)
@@ -398,11 +372,13 @@ class BuildDescriptorPy(PluginBase):
               found_same_color = True
               if found_opposite_color:
                 for flip in potential_flips:
-                  if currRow * 8 + currColumn in connections:
-                      connections[currRow * 8 + currColumn].append((flip[0], flip[1]))
-                  else: 
-                      connections[currRow * 8 + currColumn] = [(flip[0], flip[1])]
+                  if (currRow, currColumn) != flip:
+                    if currRow * 8 + currColumn in connections:
+                        connections[currRow * 8 + currColumn].append((flip[0], flip[1]))
+                    else: 
+                        connections[currRow * 8 + currColumn] = [(flip[0], flip[1])]
                   final_flips.append(flip)
+                  validTiles.append((currRow, currColumn))
             whichRow += 1
             whichCol += 1
 
@@ -489,5 +465,5 @@ class BuildDescriptorPy(PluginBase):
             whichCol += 1
 
     logger.info('IN BUILD DESCRIPTOR VALID TILES: {0}'.format(validTiles))
-    return validTiles, connections, currentPlayer, opposite
+    return validTiles, connections, currentPlayer
 
