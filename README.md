@@ -8,7 +8,7 @@ CS-6388 Model-Integrated Computing
 Fall 2023
 
 ## Overview
-This repository contains a design studio for an Othello game. Rules can be found here on the [Othello website](https://www.eothello.com). It incorporates many tools working at once: WebGME, ReactJS, Docker, NodeJS, MongoDB, and Python plugins. The process. The design process for this design studio is as follows: 
+This repository contains a design studio for an Othello game. Rules can be found here on the [Othello website](https://www.eothello.com). It incorporates many tools working at once: WebGME, ReactJS, Docker, NodeJS, MongoDB, and Python plugins. The design process for this design studio is as follows: 
 
 - First, the metamodel was developed using WebGME, as this serves as the basis for modeling an OthelloGame.
 - Plugins were written in Python using the core WebGME API in Python.
