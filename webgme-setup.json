@@ -23,10 +23,6 @@
         "src": "src/plugins/PlayerMoves",
         "test": "test/plugins/PlayerMoves"
       },
-      "CreateGame": {
-        "src": "src/plugins/CreateGame",
-        "test": "test/plugins/CreateGame"
-      },
       "BuildDescriptor": {
         "src": "src/plugins/BuildDescriptor",
         "test": "test/plugins/BuildDescriptor"

@@ -250,32 +250,6 @@ define([
         this._toolbarItems.push(toolBar.addSeparator());
 
         /************** Go to hierarchical parent button ****************/
-        this.$btnNewGame = toolBar.addButton({
-            title: 'Start new game',
-            icon: 'glyphicon glyphicon-plus',
-            clickFn: function (/*data*/) {
-                const context = _client.getCurrentPluginContext('CreateGame');
-                context.managerConfig.activeNode = self._currentNodeParentId;
-                context.managerConfig.namespace = null;
-                context.pluginConfig = {};
-
-                _client.runServerPlugin('CreateGame', context, (err, result)=>{
-                    // console.log('export:', err, result);
-                    if (err === null && result && result.success) {
-                        //TODO: - there is nothing to do as the plugin updated the model
-                        const newGamePath = result.messages[0].message;
-                        WebGMEGlobal.State.registerActiveObject(newGamePath);
-                        WebGMEGlobal.State.registerActiveVisualizer('ReactOthello');
-                    } else {
-                        //TODO - make a proper way of handling this
-                        _logger.error('Failed to initiate new game', err);
-                    }
-                });
-            }
-        });
-        this._toolbarItems.push(this.$btnNewGame);
-        this.$btnNewGame.hide();
-
         this.$btnUndoGame = toolBar.addButton({
             title: 'Undo',
             icon: 'glyphicon glyphicon-circle-arrow-left',
