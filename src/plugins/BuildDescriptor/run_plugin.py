@@ -1,5 +1,5 @@
 """
-This script is called by the plugin-wrapper, BuildDescriptorPy.js, which passes down the
+This script is called by the plugin-wrapper, BuildDescriptor.js, which passes down the
 plugin context via arguments. These can be modified to include more information if needed.
 Notes:
  - The current working directory when called from a plugin is the root of your webgme repo.
@@ -10,9 +10,9 @@ Notes:
 import sys
 import logging
 from webgme_bindings import WebGME
-from BuildDescriptorPy import BuildDescriptorPy
+from BuildDescriptor import BuildDescriptor
 
-logger = logging.getLogger('BuildDescriptorPy')
+logger = logging.getLogger('BuildDescriptor')
 
 # Read in the context from sys.argv passed by the plugin
 logger.info('sys.args: {0}'.format(sys.argv))
@@ -38,7 +38,7 @@ logger.debug('name-space: {0}'.format(NAMESPACE))
 
 # Create an instance of WebGME and the plugin
 webgme = WebGME(PORT, logger)
-plugin = BuildDescriptorPy(webgme, COMMIT_HASH, BRANCH_NAME, ACTIVE_NODE_PATH, ACTIVE_SELECTION_PATHS, NAMESPACE)
+plugin = BuildDescriptor(webgme, COMMIT_HASH, BRANCH_NAME, ACTIVE_NODE_PATH, ACTIVE_SELECTION_PATHS, NAMESPACE)
 
 # Do the work
 plugin.main()

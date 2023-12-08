@@ -92,12 +92,12 @@ define([
         console.log('in creating descirptor in reactothellocontrol');
         const {_client, _META, _currentNodeId, _logger} = this;
         if (typeof _currentNodeId === 'string') {
-            const context = _client.getCurrentPluginContext('BuildDescriptorPy');
+            const context = _client.getCurrentPluginContext('BuildDescriptor');
             context.managerConfig.activeNode = _currentNodeId;
             context.managerConfig.namespace = null;
             context.pluginConfig = {};
 
-            _client.runServerPlugin('BuildDescriptorPy', context, (err, result)=>{
+            _client.runServerPlugin('BuildDescriptor', context, (err, result)=>{
                 // console.log('export:', err, result);
                 if (err === null && result && result.success) {
                     const descriptor = JSON.parse(result.messages[0].message);

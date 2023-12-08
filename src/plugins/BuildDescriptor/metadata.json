@@ -1,6 +1,6 @@
 {
-  "id": "CheckWinCondition",
-  "name": "CheckWinCondition",
+  "id": "BuildDescriptor",
+  "name": "BuildDescriptor",
   "version": "0.1.0",
   "description": "",
   "icon": {
@@ -8,7 +8,7 @@
     "src": ""
   },
   "disableServerSideExecution": false,
-  "disableBrowserSideExecution": false,
+  "disableBrowserSideExecution": true,
   "dependencies": [],
   "writeAccessRequired": false,
   "configStructure": []

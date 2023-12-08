@@ -24,10 +24,13 @@ class Undo(PluginBase):
         self.namespace = None
         META = self.META
 
-        nodesList = core.load_sub_tree(active_node)
-        currentGameState = active_node
+        gameChildren = core.load_children(active_node)
+        
+        maxIndex = 0
+        for potentialGameStateNode in gameChildren:
+           
 
-        currentGameStateName = core.get_attribute(currentGameState, 'state_name')
+          currentGameStateName = core.get_attribute(potentialGameStateNode, 'state_name')
         
         # only undo if not the first state
         if currentGameStateName != 'OthelloGameState1':

@@ -35,7 +35,7 @@ define([
      * @classdesc This class represents the plugin PythonBindings.
      * @constructor
      */
-    function BuildDescriptorPy() {
+    function BuildDescriptor() {
         // Call base class' constructor.
         PluginBase.call(this);
         this.pluginMetadata = pluginMetadata;
@@ -46,11 +46,11 @@ define([
      * This is also available at the instance at this.pluginMetadata.
      * @type {object}
      */
-    BuildDescriptorPy.metadata = pluginMetadata;
+    BuildDescriptor.metadata = pluginMetadata;
 
     // Prototypical inheritance from PluginBase.
-    BuildDescriptorPy.prototype = Object.create(PluginBase.prototype);
-    BuildDescriptorPy.prototype.constructor = BuildDescriptorPy;
+    BuildDescriptor.prototype = Object.create(PluginBase.prototype);
+    BuildDescriptor.prototype.constructor = BuildDescriptor;
 
     /**
      * Main function for the plugin to execute. This will perform the execution.
@@ -61,7 +61,7 @@ define([
      *
      * @param {function(null|Error|string, plugin.PluginResult)} callback - the result callback
      */
-    BuildDescriptorPy.prototype.main = function (callback) {
+    BuildDescriptor.prototype.main = function (callback) {
         const CoreZMQ = require('webgme-bindings').CoreZMQ;
         const cp = require('child_process');
         const logger = this.logger;
@@ -139,5 +139,5 @@ define([
             });
     };
 
-    return BuildDescriptorPy;
+    return BuildDescriptor;
 });

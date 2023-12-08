@@ -14,5 +14,3 @@ overrideFromEnv(config);
 
 validateConfig(config);
 module.exports = config;
-console.log('env variable is: ' + env);
-console.log('in index.js')

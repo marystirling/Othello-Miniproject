@@ -12,11 +12,11 @@ export default function Othello({player, win, board, flips, totalBlacks, totalWh
             }
         } else {
             if (totalBlacks > totalWhites) {
-                return 'Player black won!'
+                return `Player black won! (Black: ${totalBlacks}, White: ${totalWhites})`;
             } else if (totalWhites > totalBlacks) {
-                return 'Player white won!'
+                return `Player white won! (Black: ${totalBlacks}, White: ${totalWhites})`;
             } else {
-                return 'Game ended in tie.'
+                return `Game ended in tie. (Black: ${totalBlacks}, White: ${totalWhites});`
             }
             
         }
