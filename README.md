@@ -1,10 +1,5 @@
 # Othello Design Studio
 By Mary Stirling Brown
-
-Vanderbilt University
-
-CS-6388 Model-Integrated Computing
-
 Fall 2023
 
 ## Overview
