@@ -6,7 +6,7 @@ MAINTAINER Tamas Kecskes <tamas.kecskes@vanderbilt.edu>
 
 RUN apk update
 RUN apk add --no-cache make g++ git python3 py3-pip py3-setuptools
-RUN pip3 install webgme-bindings
+RUN pip3 install --break-system-packages webgme-bindings
 
 RUN mkdir /usr/app
 
